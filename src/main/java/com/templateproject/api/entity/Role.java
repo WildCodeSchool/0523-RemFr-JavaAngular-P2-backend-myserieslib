@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -13,6 +15,6 @@ import jakarta.persistence.*;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
     private String roleName;
 }

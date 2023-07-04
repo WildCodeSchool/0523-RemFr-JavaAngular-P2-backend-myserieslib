@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -15,13 +17,13 @@ import java.util.List;
 public class Episode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private int episodeNumber;
+    private UUID id;
+    private Integer episodeNumber;
     private String title;
-    private int seasonNumber;
+    private Integer seasonNumber;
     private String thumbnail;
     private String description;
-    private Date releaseDate;
+    private LocalDate releaseDate;
 
     @ManyToOne
     @JoinColumn(name = "serie_id")

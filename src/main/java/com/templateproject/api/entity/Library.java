@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -12,9 +14,9 @@ import lombok.NoArgsConstructor;
 public class Library {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
-    private int score;
+    private Integer score;
     private String comment;
 
     @ManyToOne
@@ -27,6 +29,6 @@ public class Library {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private EStatus status;
+    private LibraryStatus status;
 
 }
