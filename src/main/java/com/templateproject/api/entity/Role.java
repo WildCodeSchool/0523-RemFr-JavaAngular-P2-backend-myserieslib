@@ -17,4 +17,8 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String roleName;
+
+    public Role(String roleName) {
+        this.roleName = roleName;
+    }
 }

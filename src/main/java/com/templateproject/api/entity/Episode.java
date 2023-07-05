@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Date;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +18,7 @@ public class Episode {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     private Integer episodeNumber;
     private String title;
     private Integer seasonNumber;
@@ -31,4 +32,13 @@ public class Episode {
 
     @ManyToMany(mappedBy = "episodes")
     private List<User> users;
+
+    public Episode(Integer episodeNumber, String title, Integer seasonNumber, String thumbnail, String description, LocalDate releaseDate) {
+        this.description = description;
+        this.episodeNumber = episodeNumber;
+        this.title = title;
+        this.seasonNumber = seasonNumber;
+        this.releaseDate = releaseDate;
+        this.thumbnail = thumbnail;
+    }
 }
