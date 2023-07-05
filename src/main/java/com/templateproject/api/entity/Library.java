@@ -33,4 +33,8 @@ public class Library {
     @Column(name = "status")
     private LibraryStatus status;
 
+    public Library(Integer score, String comment) {
+        this.comment = comment;
+        this.score = score;
+    }
 }

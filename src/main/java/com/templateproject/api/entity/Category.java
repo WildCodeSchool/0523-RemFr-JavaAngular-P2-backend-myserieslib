@@ -22,4 +22,8 @@ public class Category {
 
     @ManyToMany(mappedBy = "categories")
     private List<Serie> series = new ArrayList<>();
+
+    public Category(String name) {
+        this.name = name;
+    }
 }
