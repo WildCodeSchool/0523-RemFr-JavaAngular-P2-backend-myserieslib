@@ -41,7 +41,8 @@ public class LibraryController {
     }
 
     @GetMapping("/{serieId}/score")
-    public Double getAverageRating(@PathVariable UUID serieId) {
-        return libraryService.getAverageRatings(serieId);
+    public ResponseEntity<Double> getAverageRating(@PathVariable UUID serieId) {
+        Double averageRating = libraryService.getAverageRatings(serieId);
+        return new ResponseEntity<>(averageRating, HttpStatus.OK);
     }
 }
