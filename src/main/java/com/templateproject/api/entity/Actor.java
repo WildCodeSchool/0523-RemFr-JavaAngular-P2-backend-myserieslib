@@ -24,4 +24,10 @@ public class Actor {
 
     @ManyToMany(mappedBy = "actors")
     private List<Serie> series = new ArrayList<>();
+
+    public Actor(String firstname, String lastname, String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+        this.firstName = firstname;
+        this.lastName = lastname;
+    }
 }

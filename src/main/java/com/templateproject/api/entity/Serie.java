@@ -2,10 +2,13 @@ package com.templateproject.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.github.javafaker.Bool;
+import com.github.javafaker.DateAndTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,4 +46,13 @@ public class Serie {
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     private List<Actor> actors = new ArrayList<>();
 
+    public Serie(String name, String producer, String pictureUrl, String trailerURL, LocalDate releaseDate, String description, Boolean isCompleted) {
+        this.name = name;
+        this.producer = producer;
+        this.pictureUrl = pictureUrl;
+        this.trailerURL = trailerURL;
+        this.releaseDate = releaseDate;
+        this.isCompleted= isCompleted;
+        this.description = description;
+    }
 }
