@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Episode {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private Integer episodeNumber;
     private String title;

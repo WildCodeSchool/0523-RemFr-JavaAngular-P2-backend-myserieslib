@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Library {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private Integer score;
