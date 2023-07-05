@@ -32,4 +32,13 @@ public class Episode {
 
     @ManyToMany(mappedBy = "episodes")
     private List<User> users;
+
+    public Episode(Integer episodeNumber, String title, Integer seasonNumber, String thumbnail, String description, LocalDate releaseDate) {
+        this.description = description;
+        this.episodeNumber = episodeNumber;
+        this.title = title;
+        this.seasonNumber = seasonNumber;
+        this.releaseDate = releaseDate;
+        this.thumbnail = thumbnail;
+    }
 }
