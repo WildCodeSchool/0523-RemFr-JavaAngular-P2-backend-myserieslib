@@ -12,6 +12,6 @@ import java.util.UUID;
 
 @Repository
 public interface LibraryRepository extends JpaRepository<Library, UUID> {
-    List<Library> findByUserStatus(User user, LibraryStatus status);
-    List<Library> findByUserId(UUID id);
+    List<Library> findByUserAndStatus(User user, LibraryStatus status);
+    List<Library> findByUserId(UUID userId);
 }

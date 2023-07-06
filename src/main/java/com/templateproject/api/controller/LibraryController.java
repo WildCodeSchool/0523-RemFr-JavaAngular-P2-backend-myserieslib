@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/users/libraries")
+@RequestMapping("/api/librairies")
 public class LibraryController {
     private final LibraryRepository libraryRepository;
     private final UserRepository userRepository;
@@ -23,26 +23,28 @@ public class LibraryController {
         this.userRepository = userRepositoryInjected;
     }
 
-    @GetMapping("/in_progress")
-    public List<Library> getInProgress() {
-        User user = null;
-        // récupérer l'utilisateur connecté
-        return libraryRepository.findByUserStatus(
-                user,LibraryStatus.IN_PROGRESS
-        );
+    @GetMapping("")
+    public List<Library> getAll() {
+        return this.libraryRepository.findAll();
     }
 
-    @GetMapping("/{id}/libraries")
-    public List<Library> getLibrariesByUserId(@PathVariable UUID id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    @GetMapping("/{userId}")
+    public List<Library> getAllUserSeries(@PathVariable UUID userId) {
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if (user != null) {
-            return libraryRepository.findByUserId(id);
+            return libraryRepository.findByUserId(userId);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
-    @DeleteMapping("/series/{id}")
+    @GetMapping("/{userId}/in_progress")
+    public List<Library> getInProgress(@PathVariable UUID userId) {
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return libraryRepository.findByUserAndStatus(user, LibraryStatus.IN_PROGRESS);
+    }
+
+    @DeleteMapping("/{id}")
     public void deleteSeries(@PathVariable UUID id) {
         this.libraryRepository.deleteById(id);
     }

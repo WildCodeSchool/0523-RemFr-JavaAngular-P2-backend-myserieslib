@@ -39,7 +39,6 @@ public class User {
     @JoinTable(name = "user_episode",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "episode_id"))
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     private List<Episode> episodes = new ArrayList<>();
 
     public User(String email, String username, String password, String pictureUrl, Role role) {
