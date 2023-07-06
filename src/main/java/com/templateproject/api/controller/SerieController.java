@@ -1,7 +1,9 @@
 package com.templateproject.api.controller;
 
 import com.templateproject.api.entity.Serie;
+import com.templateproject.api.repository.SerieRepository;
 import com.templateproject.api.service.SerieService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,9 +18,11 @@ import java.util.UUID;
 public class SerieController {
 
     private final SerieService serieService;
+    private final SerieRepository serieRepository;
 
-    public SerieController(SerieService serieService) {
+    public SerieController(SerieService serieService, SerieRepository serieRepository) {
         this.serieService = serieService;
+        this.serieRepository = serieRepository;
     }
 
     @GetMapping("/all")
@@ -34,12 +38,9 @@ public class SerieController {
     }
 
     @GetMapping("/trending")
-    public ResponseEntity<List<Serie>> getTrending(@RequestParam(required = false) LocalDate releaseDate) {
-        if (releaseDate == null) {
-            releaseDate = LocalDate.now();
-        }
-        List<Serie> serieList = serieService.getTrending(releaseDate);
-        return new ResponseEntity<>(serieList, HttpStatus.OK);
+    public ResponseEntity<List<Serie>> getTrendingSeries() {
+        List<Serie> trendingSeries = serieService.getTrendingSeries();
+        return ResponseEntity.ok(trendingSeries);
     }
 
     @PutMapping("/update/{id}")

@@ -7,6 +7,10 @@ import com.templateproject.api.repository.ActorRepository;
 import com.templateproject.api.repository.CategoryRepository;
 import com.templateproject.api.repository.SerieRepository;
 import jakarta.persistence.EntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -35,8 +39,9 @@ public class SerieService {
         return serieRepository.save(serie);
     }
 
-    public List<Serie> getTrending(LocalDate releaseDate){
-        return serieRepository.findByReleaseDateGreaterThanEqualOrderByReleaseDateDesc(releaseDate);
+    public List<Serie> getTrendingSeries() {
+        LocalDate currentDate = LocalDate.now();
+        return serieRepository.findByReleaseDateLessThanEqualOrderByReleaseDateDesc(currentDate, PageRequest.of(0, 15));
     }
 
     public Serie getSerieById(UUID id) {
