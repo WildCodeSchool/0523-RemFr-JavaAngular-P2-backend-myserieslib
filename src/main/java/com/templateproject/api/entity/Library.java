@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -25,9 +24,8 @@ public class Library {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "serie_id")
-    private Serie serie;
+    @ManyToMany
+    private Set<Serie> serie;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

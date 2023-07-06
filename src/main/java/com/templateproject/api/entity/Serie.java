@@ -1,6 +1,7 @@
 package com.templateproject.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.javafaker.Bool;
 import com.github.javafaker.DateAndTime;
@@ -37,6 +38,7 @@ public class Serie {
             joinColumns = @JoinColumn(name = "serie_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIgnore
     private List<Category> categories = new ArrayList<>();
 
     @ManyToMany
@@ -44,6 +46,7 @@ public class Serie {
             joinColumns = @JoinColumn(name = "serie_id"),
             inverseJoinColumns = @JoinColumn(name = "actor_id"))
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIgnore
     private List<Actor> actors = new ArrayList<>();
 
     public Serie(String name, String producer, String pictureUrl, String trailerURL, LocalDate releaseDate, String description, Boolean isCompleted) {
