@@ -48,6 +48,21 @@ public class SerieService {
                 .orElseThrow(() -> new IllegalArgumentException("Serie not found"));
     }
 
+    public List<Serie> filterSerie(String title, String filterType, String category) {
+        String filterActor = "Actor";
+        String filterProducer = "Producer";
+        if(title == null || title.equals("")){
+            title = "%";
+        }
+        if(filterType != null && filterType.equals(filterActor)) {
+            return this.serieRepository.findSeriesFromActor(title, category);
+        }
+        if(filterType != null && filterType.equals(filterProducer)) {
+            return this.serieRepository.findSeriesFromProducer(title, category);
+        }
+        return this.serieRepository.findSeriesFromTitle(title, category);
+    }
+
     public Serie updateSerie(UUID id, Serie serie, UUID actorId, UUID categoryId) {
         Serie serieFound = serieRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Serie not found"));
