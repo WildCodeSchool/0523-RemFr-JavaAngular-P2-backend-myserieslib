@@ -1,5 +1,6 @@
 package com.templateproject.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class Actor {
     private String pictureUrl;
 
     @ManyToMany(mappedBy = "actors")
+    @JsonIgnore
     private List<Serie> series = new ArrayList<>();
 
     public Actor(String firstname, String lastname, String pictureUrl) {

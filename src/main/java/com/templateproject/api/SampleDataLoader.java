@@ -8,8 +8,10 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -121,7 +123,7 @@ public class SampleDataLoader implements CommandLineRunner {
                     );
                     Serie serie = series.get(random.nextInt(25));
                     User user = users.get(random.nextInt(25));
-                    library.setSerie(serie);
+                    library.setSerie(Collections.singleton(serie));
                     library.setUser(user);
                     List<Episode> episodes = episodeRepository.findBySerie(serie);
                     int nbOfEpisodes = episodes.size();
