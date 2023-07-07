@@ -37,16 +37,12 @@ public class Serie {
     @JoinTable(name = "serie_category",
             joinColumns = @JoinColumn(name = "serie_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIgnore
     private List<Category> categories = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "serie_actor",
             joinColumns = @JoinColumn(name = "serie_id"),
             inverseJoinColumns = @JoinColumn(name = "actor_id"))
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIgnore
     private List<Actor> actors = new ArrayList<>();
 
     public Serie(String name, String producer, String pictureUrl, String trailerURL, LocalDate releaseDate, String description, Boolean isCompleted) {

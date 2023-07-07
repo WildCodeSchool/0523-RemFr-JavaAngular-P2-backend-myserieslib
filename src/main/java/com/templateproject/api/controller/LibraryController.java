@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/libraries")
+@CrossOrigin(origins="http://localhost:4200")
 public class LibraryController {
 
     private final LibraryService libraryService;
@@ -24,12 +25,6 @@ public class LibraryController {
     public List<Library> findAll() {
         List<Library> libraries = libraryService.findAll();
         return libraries;
-    }
-
-    @PostMapping("/{id}/series/{serieId}")
-    public Library addSerieToLibrary(@PathVariable UUID id, @PathVariable UUID serieId) {
-        Library library = libraryService.addSerieToLibrary(id, serieId);
-        return library;
     }
 
     @GetMapping("/{serieId}")

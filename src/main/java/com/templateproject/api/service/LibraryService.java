@@ -31,18 +31,8 @@ public class LibraryService {
         return libraryRepository.findAll();
     }
 
-    public Library addSerieToLibrary(UUID id, UUID serieId) {
-       Library library = libraryRepository.findById(id)
-               .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Library not found"));
-        Serie serie = serieRepository.findById(serieId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Serie not found"));
-        Set<Serie> serieSet = library.getSerie();
-        serieSet.add(serie);
-        return libraryRepository.save(library);
-    }
-
     public Double getAverageRatings(UUID serieId) {
-        List<Library> libraries = libraryRepository.findSerieById(serieId);
+        List<Library> libraries = libraryRepository.findLibrariesBySerieId(serieId);
         if (libraries.isEmpty()) {
             return 0.0;
         }

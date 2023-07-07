@@ -1,5 +1,6 @@
 package com.templateproject.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,10 +23,12 @@ public class Library {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
-    @ManyToMany
-    private Set<Serie> serie;
+    @ManyToOne
+    @JoinColumn(name= "serie_id")
+    private Serie serie;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
