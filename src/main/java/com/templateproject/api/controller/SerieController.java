@@ -50,7 +50,7 @@ public class SerieController {
     }
 
     @GetMapping("")
-    public List<Serie> getSeries(@RequestParam(name="title", required = false) String title, @RequestParam(name="filter", required=false) String filterType, @RequestParam(name="category", required = false) String category) {
+    public List<Serie> getSeries(@RequestParam(name="title", required = false) String title, @RequestParam(name="filter", required=false) String filterType, @RequestParam(name="category", required = false) UUID category) {
         return this.serieService.filterSerie(title, filterType, category);
     }
 }

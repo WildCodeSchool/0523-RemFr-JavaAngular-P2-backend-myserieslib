@@ -16,13 +16,13 @@ import java.util.UUID;
 public interface SerieRepository extends JpaRepository<Serie, UUID> {
      List<Serie> findByReleaseDateLessThanEqual(LocalDate date, Pageable pageable);
 
-    @Query("SELECT s FROM Serie s JOIN s.categories c WHERE s.name LIKE CONCAT('%', :title, '%')  AND (c.name = :category OR :category is null)")
-    List<Serie> findSeriesFromTitle(@Param("title") String title, @Param("category") String category);
+    @Query("SELECT s, GROUP_CONCAT(c.name) FROM Serie s JOIN s.categories c WHERE s.name LIKE CONCAT('%', :title, '%')  AND (c.id = :category OR :category is null) GROUP BY s.id")
+    List<Serie> findSeriesFromTitle(@Param("title") String title, @Param("category") UUID category);
 
-    @Query("SELECT s FROM Serie s JOIN s.categories c JOIN s.actors a WHERE CONCAT(a.firstName ,' ', a.lastName) LIKE CONCAT('%', :title, '%')  AND (c.name = :category OR :category is null)")
-    List<Serie> findSeriesFromActor(@Param("title") String title, @Param("category") String category);
+    @Query("SELECT s, GROUP_CONCAT(c.name) FROM Serie s JOIN s.categories c JOIN s.actors a WHERE CONCAT(a.firstName ,' ', a.lastName) LIKE CONCAT('%', :title, '%')  AND (c.id = :category OR :category is null)  GROUP BY s.id")
+    List<Serie> findSeriesFromActor(@Param("title") String title, @Param("category") UUID category);
 
-    @Query("SELECT s FROM Serie s JOIN s.categories c  WHERE s.producer LIKE CONCAT('%', :title, '%')  AND (c.name = :category OR :category is null)")
-    List<Serie> findSeriesFromProducer(@Param("title") String title, @Param("category") String category);
+    @Query("SELECT s, GROUP_CONCAT(c.name) FROM Serie s JOIN s.categories c  WHERE s.producer LIKE CONCAT('%', :title, '%')  AND (c.id = :category OR :category is null)  GROUP BY s.id")
+    List<Serie> findSeriesFromProducer(@Param("title") String title, @Param("category") UUID category);
 
 }

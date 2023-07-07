@@ -48,16 +48,16 @@ public class SerieService {
                 .orElseThrow(() -> new IllegalArgumentException("Serie not found"));
     }
 
-    public List<Serie> filterSerie(String title, String filterType, String category) {
+    public List<Serie> filterSerie(String title, String filterType, UUID category) {
         String filterActor = "Actor";
         String filterProducer = "Producer";
-        if(title == null || title.equals("")){
+        if (title == null || title.equals("")) {
             title = "%";
         }
-        if(filterType != null && filterType.equals(filterActor)) {
+        if (filterType != null && filterType.equals(filterActor)) {
             return this.serieRepository.findSeriesFromActor(title, category);
         }
-        if(filterType != null && filterType.equals(filterProducer)) {
+        if (filterType != null && filterType.equals(filterProducer)) {
             return this.serieRepository.findSeriesFromProducer(title, category);
         }
         return this.serieRepository.findSeriesFromTitle(title, category);
@@ -87,7 +87,7 @@ public class SerieService {
             serieFound.getCategories().add(categoryToUpdate);
         }
 
-        return serieRepository.save(serieFound);
+        return serieRepository.save(serie);
     }
 
 }

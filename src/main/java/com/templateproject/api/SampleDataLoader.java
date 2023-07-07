@@ -123,7 +123,7 @@ public class SampleDataLoader implements CommandLineRunner {
                     );
                     Serie serie = series.get(random.nextInt(25));
                     User user = users.get(random.nextInt(25));
-                    library.setSerie(Collections.singleton(serie));
+                    library.setSerie(serie);
                     library.setUser(user);
                     List<Episode> episodes = episodeRepository.findBySerie(serie);
                     int nbOfEpisodes = episodes.size();

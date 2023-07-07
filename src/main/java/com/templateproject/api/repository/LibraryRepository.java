@@ -13,4 +13,6 @@ import java.util.UUID;
 @Repository
 public interface LibraryRepository extends JpaRepository<Library, UUID> {
     List<Library> findSerieById(UUID serieId);
+
+    List<Library> findLibrariesBySerieId(UUID serieId);
 }

@@ -26,8 +26,9 @@ public class Library {
     @JsonIgnore
     private User user;
 
-    @ManyToMany
-    private Set<Serie> serie;
+    @ManyToOne
+    @JoinColumn(name= "serie_id")
+    private Serie serie;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
