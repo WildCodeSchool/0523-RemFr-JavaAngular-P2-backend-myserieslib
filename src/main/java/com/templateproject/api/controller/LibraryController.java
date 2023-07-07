@@ -8,6 +8,7 @@ import com.templateproject.api.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import com.templateproject.api.service.LibraryService;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,10 +18,12 @@ import java.util.UUID;
 public class LibraryController {
     private final LibraryRepository libraryRepository;
     private final UserRepository userRepository;
+    private final LibraryService libraryService;
 
-    public LibraryController(LibraryRepository libraryRepositoryInjected, UserRepository userRepositoryInjected) {
+    public LibraryController(LibraryRepository libraryRepositoryInjected, UserRepository userRepositoryInjected, LibraryService libraryService) {
         this.libraryRepository = libraryRepositoryInjected;
         this.userRepository = userRepositoryInjected;
+        this.libraryService = libraryService;
     }
 
     @GetMapping("")
