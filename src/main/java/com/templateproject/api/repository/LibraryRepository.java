@@ -15,4 +15,6 @@ public interface LibraryRepository extends JpaRepository<Library, UUID> {
     List<Library> findByUserAndStatus(User user, LibraryStatus status);
     List<Library> findByUserId(UUID userId);
     List<Library> findSerieById(UUID serieId);
+
+    List<Library> findLibrariesBySerieId(UUID serieId);
 }

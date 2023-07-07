@@ -13,17 +13,15 @@ import com.templateproject.api.service.LibraryService;
 import java.util.List;
 import java.util.UUID;
 
-@RestController
 @RequestMapping("/api/librairies")
+@CrossOrigin(origins="http://localhost:4200")
 public class LibraryController {
     private final LibraryRepository libraryRepository;
     private final UserRepository userRepository;
-    private final LibraryService libraryService;
 
-    public LibraryController(LibraryRepository libraryRepositoryInjected, UserRepository userRepositoryInjected, LibraryService libraryService) {
+    public LibraryController(LibraryRepository libraryRepositoryInjected, UserRepository userRepositoryInjected) {
         this.libraryRepository = libraryRepositoryInjected;
         this.userRepository = userRepositoryInjected;
-        this.libraryService = libraryService;
     }
 
     @GetMapping("")
@@ -45,10 +43,5 @@ public class LibraryController {
     public List<Library> getInProgress(@PathVariable UUID userId) {
         User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return libraryRepository.findByUserAndStatus(user, LibraryStatus.IN_PROGRESS);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteSeries(@PathVariable UUID id) {
-        this.libraryRepository.deleteById(id);
     }
 }

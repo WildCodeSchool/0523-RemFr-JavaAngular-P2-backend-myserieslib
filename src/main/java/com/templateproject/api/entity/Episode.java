@@ -1,5 +1,7 @@
 package com.templateproject.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,6 +33,7 @@ public class Episode {
     private Serie serie;
 
     @ManyToMany(mappedBy = "episodes")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     private List<User> users;
 
     public Episode(Integer episodeNumber, String title, Integer seasonNumber, String thumbnail, String description, LocalDate releaseDate) {

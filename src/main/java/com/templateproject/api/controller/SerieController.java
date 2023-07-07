@@ -13,18 +13,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/series")
+@CrossOrigin(origins="http://localhost:4200")
 public class SerieController {
 
     private final SerieService serieService;
 
     public SerieController(SerieService serieService) {
         this.serieService = serieService;
-    }
-
-    @GetMapping("")
-    public List<Serie> findALl() {
-        List<Serie> serieList = serieService.findAll();
-        return serieList;
     }
 
     @PostMapping("")
@@ -52,5 +47,10 @@ public class SerieController {
     public ResponseEntity<Serie> findById(@PathVariable("id") UUID id) {
         Serie serie = serieService.getSerieById(id);
         return new ResponseEntity<>(serie, HttpStatus.OK);
+    }
+
+    @GetMapping("")
+    public List<Serie> getSeries(@RequestParam(name="title", required = false) String title, @RequestParam(name="filter", required=false) String filterType, @RequestParam(name="category", required = false) UUID category) {
+        return this.serieService.filterSerie(title, filterType, category);
     }
 }

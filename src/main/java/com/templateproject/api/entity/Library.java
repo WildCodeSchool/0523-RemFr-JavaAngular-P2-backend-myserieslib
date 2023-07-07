@@ -1,7 +1,6 @@
 package com.templateproject.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +26,6 @@ public class Library {
     @JsonIgnore
     private User user;
 
-    @ManyToOne
     @JoinColumn(name = "serie_id")
     private Serie serie;
 

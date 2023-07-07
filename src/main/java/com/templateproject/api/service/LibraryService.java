@@ -32,7 +32,7 @@ public class LibraryService {
     }
 
     public Double getAverageRatings(UUID serieId) {
-        List<Library> libraries = libraryRepository.findSerieById(serieId);
+        List<Library> libraries = libraryRepository.findLibrariesBySerieId(serieId);
         if (libraries.isEmpty()) {
             return 0.0;
         }
