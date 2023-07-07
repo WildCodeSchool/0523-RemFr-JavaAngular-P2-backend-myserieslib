@@ -26,6 +26,7 @@ public class Library {
     @JsonIgnore
     private User user;
 
+    @ManyToOne
     @JoinColumn(name = "serie_id")
     private Serie serie;
 

@@ -13,6 +13,7 @@ import com.templateproject.api.service.LibraryService;
 import java.util.List;
 import java.util.UUID;
 
+@RestController
 @RequestMapping("/api/librairies")
 @CrossOrigin(origins="http://localhost:4200")
 public class LibraryController {
@@ -35,7 +36,7 @@ public class LibraryController {
         if (user != null) {
             return libraryRepository.findByUserId(userId);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pas trouvé avec cette id");
         }
     }
 
@@ -43,5 +44,16 @@ public class LibraryController {
     public List<Library> getInProgress(@PathVariable UUID userId) {
         User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return libraryRepository.findByUserAndStatus(user, LibraryStatus.IN_PROGRESS);
+    }
+
+    @GetMapping("/{userId}/finished")
+    public List<Library> getFinished(@PathVariable UUID userId) {
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return libraryRepository.findByUserAndStatus(user, LibraryStatus.FINISHED);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteSeries(@PathVariable UUID id) {
+        this.libraryRepository.deleteById(id);
     }
 }
