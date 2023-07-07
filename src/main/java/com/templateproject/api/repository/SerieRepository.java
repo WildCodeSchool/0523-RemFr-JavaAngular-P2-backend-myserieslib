@@ -14,6 +14,7 @@ import java.util.UUID;
 
 @Repository
 public interface SerieRepository extends JpaRepository<Serie, UUID> {
+    List<Serie> findSerieByIsCompleted(Boolean isCompleted);
      List<Serie> findByReleaseDateLessThanEqual(LocalDate date, Pageable pageable);
 
     @Query("SELECT s, GROUP_CONCAT(c.name) FROM Serie s JOIN s.categories c WHERE s.name LIKE CONCAT('%', :title, '%')  AND (c.id = :category OR :category is null) GROUP BY s.id")

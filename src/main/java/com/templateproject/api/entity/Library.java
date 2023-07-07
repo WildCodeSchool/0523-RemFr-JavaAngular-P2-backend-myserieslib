@@ -27,7 +27,7 @@ public class Library {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name= "serie_id")
+    @JoinColumn(name = "serie_id")
     private Serie serie;
 
     @Enumerated(EnumType.STRING)
