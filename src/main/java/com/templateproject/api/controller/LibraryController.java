@@ -75,20 +75,32 @@ public class LibraryController {
             @PathVariable UUID userId,
             @PathVariable UUID serieId
     ) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        Optional<Serie> optionalSerie = serieRepository.findById(serieId);
-
-        if (optionalUser.isPresent() && optionalSerie.isPresent()) {
-            User user = optionalUser.get();
-            Serie serie = optionalSerie.get();
-            Library library = libraryRepository.findByUserAndSerie(user, serie);
-            if (library != null) {
-                return ResponseEntity.ok(library);
-            }
-        }
-
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        Serie serie = this.serieRepository.findById(serieId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Library library = libraryRepository.findByUserAndSerie(user, serie);
+        return ResponseEntity.ok(library);
     }
+
+    @PostMapping("/{serieId}/{userId}")
+    public Library postLibrary(@PathVariable UUID serieId, @PathVariable UUID userId) {
+        Serie serie = this.serieRepository.findById(serieId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Library library = new Library(user, serie);
+        return libraryRepository.save(library);
+    }
+
+    @PostMapping("/{serieId}/comments/{userId}")
+    public Library postComment(@PathVariable UUID serieId, @PathVariable UUID userId, @RequestParam String score, @RequestParam String comment) {
+        Library library = libraryRepository.findBySerieIdAndUserId(serieId, userId);
+        LibraryStatus status = libraryService.getProgressInSerie(serieId, userId);
+        if(status.toString().equals("NOT_STARTED")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vous devez avoir vu au moins 1 épisode pour commenter la série");
+        }
+        library.setComment(comment);
+        library.setScore(Integer.valueOf(score));
+        return libraryRepository.save(library);
+    }
+
 
     @PutMapping("/{userId}/series/{serieId}/score")
     public ResponseEntity<Library> updateScore(
