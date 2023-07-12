@@ -12,4 +12,5 @@ import java.util.UUID;
 @Repository
 public interface EpisodeRepository extends JpaRepository<Episode, UUID> {
     List<Episode> findBySerie(Serie serie);
+    List<Episode> findBySerieId(UUID serieId);
 }

@@ -15,6 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.templateproject.api.service.LibraryService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -66,6 +68,74 @@ public class LibraryController {
     public List<Library> getFinished(@PathVariable UUID userId) {
         User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return libraryRepository.findByUserAndStatus(user, LibraryStatus.FINISHED);
+    }
+
+    @GetMapping("/{userId}/series/{serieId}")
+    public ResponseEntity<Library> getUserSerieDetails(
+            @PathVariable UUID userId,
+            @PathVariable UUID serieId
+    ) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        Optional<Serie> optionalSerie = serieRepository.findById(serieId);
+
+        if (optionalUser.isPresent() && optionalSerie.isPresent()) {
+            User user = optionalUser.get();
+            Serie serie = optionalSerie.get();
+            Library library = libraryRepository.findByUserAndSerie(user, serie);
+            if (library != null) {
+                return ResponseEntity.ok(library);
+            }
+        }
+
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/{userId}/series/{serieId}/score")
+    public ResponseEntity<Library> updateScore(
+            @PathVariable UUID userId,
+            @PathVariable UUID serieId,
+            @RequestBody Map<String, Integer> scoreMap
+            ) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        Optional<Serie> optionalSerie = serieRepository.findById(serieId);
+
+        if (optionalUser.isPresent() && optionalSerie.isPresent()) {
+            User user = optionalUser.get();
+            Serie serie = optionalSerie.get();
+            Library library = libraryRepository.findByUserAndSerie(user, serie);
+
+            if (library != null) {
+                Integer score = scoreMap.get("score");
+                library.setScore(score);
+                Library updated = libraryRepository.save(library);
+                return ResponseEntity.ok(updated);
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/{userId}/series/{seriedId}/comment")
+    public ResponseEntity<Library> updateComment(
+            @PathVariable UUID userId,
+            @PathVariable UUID seriedId,
+            @RequestBody Map<String, String> commentMap
+    ) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        Optional<Serie> optionalSerie = serieRepository.findById(seriedId);
+
+        if (optionalUser.isPresent() && optionalSerie.isPresent()) {
+            User user = optionalUser.get();
+            Serie serie = optionalSerie.get();
+            Library library = libraryRepository.findByUserAndSerie(user, serie);
+
+            if (library != null) {
+                String comment = commentMap.get("comment");
+                library.setComment(comment);
+                Library updated = libraryRepository.save(library);
+                return ResponseEntity.ok(updated);
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
