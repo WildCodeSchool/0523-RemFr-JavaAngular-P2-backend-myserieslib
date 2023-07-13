@@ -38,4 +38,12 @@ public class Library {
         this.comment = comment;
         this.score = score;
     }
+
+    public Library(User user, Serie serie) {
+        this.user = user;
+        this.serie = serie;
+        this.score = null;
+        this.comment = null;
+        this.status = LibraryStatus.NOT_STARTED;
+    }
 }
