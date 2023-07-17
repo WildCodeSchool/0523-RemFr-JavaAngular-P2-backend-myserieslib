@@ -69,7 +69,8 @@ public class SerieService {
 
         serieFound.setName(serie.getName());
         serieFound.setProducer(serie.getProducer());
-        serieFound.setPictureUrl(serie.getPictureUrl());
+        serieFound.setPictureUrlXL(serie.getPictureUrlXL());
+        serieFound.setPictureUrlXS(serie.getPictureUrlXS());
         serieFound.setTrailerURL(serie.getTrailerURL());
         serieFound.setReleaseDate(serie.getReleaseDate());
         serieFound.setDescription(serie.getDescription());

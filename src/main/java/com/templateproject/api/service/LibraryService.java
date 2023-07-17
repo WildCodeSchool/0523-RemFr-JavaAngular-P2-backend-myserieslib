@@ -37,7 +37,7 @@ public class LibraryService {
         User user = userRepository.findById(userId).orElseThrow();
         int nbTotalOfEpisodes = episodeRepository.findBySerie(serie).size();
         int nbTotalOfEpisodesSeenByUser = user.getEpisodes().size();
-        if(nbTotalOfEpisodes == nbTotalOfEpisodesSeenByUser && serie.getIsCompleted() == true) {
+        if (nbTotalOfEpisodes == nbTotalOfEpisodesSeenByUser && serie.getIsCompleted()) {
             return LibraryStatus.FINISHED;
         } else if (nbTotalOfEpisodesSeenByUser == 0) {
             return LibraryStatus.NOT_STARTED;
