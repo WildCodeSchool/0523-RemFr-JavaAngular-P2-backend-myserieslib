@@ -1,15 +1,18 @@
 package com.templateproject.api.service;
 
-import com.templateproject.api.entity.Library;
-import com.templateproject.api.entity.Serie;
+import com.templateproject.api.entity.*;
+import com.templateproject.api.repository.EpisodeRepository;
 import com.templateproject.api.repository.LibraryRepository;
 import com.templateproject.api.repository.SerieRepository;
 
-import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import com.templateproject.api.repository.UserRepository;
+
+import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -21,10 +24,28 @@ public class LibraryService {
     @Autowired
     private SerieRepository serieRepository;
 
+    @Autowired
+    private EpisodeRepository episodeRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public List<Library> findAll() {
         return libraryRepository.findAll();
     }
+
+    public LibraryStatus getProgressInSerie(UUID serieId, UUID userId) {
+        Serie serie = serieRepository.findById(serieId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
+        int nbTotalOfEpisodes = episodeRepository.findBySerie(serie).size();
+        int nbTotalOfEpisodesSeenByUser = user.getEpisodes().size();
+        if (nbTotalOfEpisodes == nbTotalOfEpisodesSeenByUser && serie.getIsCompleted()) {
+            return LibraryStatus.FINISHED;
+        } else if (nbTotalOfEpisodesSeenByUser == 0) {
+            return LibraryStatus.NOT_STARTED;
+        }
+        return LibraryStatus.IN_PROGRESS;
+    };
 
     public Double getAverageRatings(UUID serieId) {
         List<Library> libraries = libraryRepository.findLibrariesBySerieId(serieId);

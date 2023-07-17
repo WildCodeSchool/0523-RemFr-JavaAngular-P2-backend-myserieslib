@@ -27,7 +27,10 @@ public class Serie {
 
     private String name;
     private String producer;
-    private String pictureUrl;
+    @Column(length = 500)
+    private String pictureUrlXL;
+    @Column(length = 500)
+    private String pictureUrlXS;
     private String trailerURL;
     private LocalDate releaseDate;
     private String description;
@@ -45,10 +48,11 @@ public class Serie {
             inverseJoinColumns = @JoinColumn(name = "actor_id"))
     private List<Actor> actors = new ArrayList<>();
 
-    public Serie(String name, String producer, String pictureUrl, String trailerURL, LocalDate releaseDate, String description, Boolean isCompleted) {
+    public Serie(String name, String producer, String pictureUrlXL, String pictureUrlXS, String trailerURL, LocalDate releaseDate, String description, Boolean isCompleted) {
         this.name = name;
         this.producer = producer;
-        this.pictureUrl = pictureUrl;
+        this.pictureUrlXL = pictureUrlXL;
+        this.pictureUrlXS = pictureUrlXS;
         this.trailerURL = trailerURL;
         this.releaseDate = releaseDate;
         this.isCompleted= isCompleted;
