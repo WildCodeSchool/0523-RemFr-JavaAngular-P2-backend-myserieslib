@@ -16,9 +16,9 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private String roleName;
+    private String name;
 
     public Role(String roleName) {
-        this.roleName = roleName;
+        this.name = roleName;
     }
 }
