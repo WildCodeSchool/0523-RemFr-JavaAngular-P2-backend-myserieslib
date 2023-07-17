@@ -5,9 +5,11 @@ import com.templateproject.api.repository.EpisodeRepository;
 import com.templateproject.api.repository.LibraryRepository;
 import com.templateproject.api.repository.SerieRepository;
 
-import com.templateproject.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+import com.templateproject.api.repository.UserRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -60,5 +62,21 @@ public class LibraryService {
             return 0.0;
         }
         return (double) totalRating / (double) numberOfRatings;
+    }
+
+    public List<Map<String, Object>> getAllAverageRatings() {
+        List<Map<String, Object>> seriesRatings = new ArrayList<>();
+        List<Serie> series = serieRepository.findAll();
+        for (Serie serie : series) {
+            Double rating = this.getAverageRatings(serie.getId());
+            Map<String, Object> serieRating = new HashMap<>();
+            serieRating.put("id", serie.getId());
+            serieRating.put("score", rating);
+            seriesRatings.add(serieRating);
+        }
+
+        Collections.sort(seriesRatings, (a, b) -> Double.compare((Double) b.get("score"), (Double) a.get("score")));
+
+        return seriesRatings;
     }
 }

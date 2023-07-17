@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import com.templateproject.api.service.LibraryService;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/libraries")
@@ -44,6 +41,11 @@ public class LibraryController {
     public ResponseEntity<Double> getAverageRating(@PathVariable UUID serieId) {
         Double averageRating = libraryService.getAverageRatings(serieId);
         return new ResponseEntity<>(averageRating, HttpStatus.OK);
+    }
+
+    @GetMapping("/series/ratings")
+    public List<Map<String, Object>> getAllAverageRatings() {
+        return this.libraryService.getAllAverageRatings();
     }
 
     @GetMapping("/{serieId}/comments")
