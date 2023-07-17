@@ -8,7 +8,6 @@ import com.templateproject.api.repository.LibraryProjection;
 import com.templateproject.api.repository.LibraryRepository;
 import com.templateproject.api.repository.SerieRepository;
 import com.templateproject.api.repository.UserRepository;
-import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
