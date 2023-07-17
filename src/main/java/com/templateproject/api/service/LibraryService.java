@@ -5,16 +5,11 @@ import com.templateproject.api.entity.Serie;
 import com.templateproject.api.repository.LibraryRepository;
 import com.templateproject.api.repository.SerieRepository;
 
+import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 
 @Service
@@ -46,5 +41,21 @@ public class LibraryService {
             return 0.0;
         }
         return (double) totalRating / (double) numberOfRatings;
+    }
+
+    public List<Map<String, Object>> getAllAverageRatings() {
+        List<Map<String, Object>> seriesRatings = new ArrayList<>();
+        List<Serie> series = serieRepository.findAll();
+        for (Serie serie : series) {
+            Double rating = this.getAverageRatings(serie.getId());
+            Map<String, Object> serieRating = new HashMap<>();
+            serieRating.put("id", serie.getId());
+            serieRating.put("score", rating);
+            seriesRatings.add(serieRating);
+        }
+
+        Collections.sort(seriesRatings, (a, b) -> Double.compare((Double) b.get("score"), (Double) a.get("score")));
+
+        return seriesRatings;
     }
 }
