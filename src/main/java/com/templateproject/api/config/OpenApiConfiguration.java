@@ -32,7 +32,7 @@ public class OpenApiConfiguration {
 
     private Contact apiContact() {
         return new Contact()
-                .name("PROJECT GROUP NAME")
+                .name("MySeriesLib")
                 .email("EMAIL ADDRESS OF PROJECT GROUP")
                 .url("Project repo address");
     }
