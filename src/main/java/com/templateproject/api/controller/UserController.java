@@ -40,7 +40,6 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    // @PreAuthorize("hasRole('ROLE_USER')") -> pour Basic Auth
     @PreAuthorize("hasAuthority('SCOPE_ROLE_USER')")
     public String userAccess() {
         return "User access";

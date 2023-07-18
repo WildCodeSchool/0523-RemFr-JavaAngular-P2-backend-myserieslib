@@ -9,17 +9,17 @@ import jakarta.persistence.GenerationType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,13 +28,20 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    private String username;
+    private String nickname;
     private String password;
     private String pictureUrl;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+    /*@ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();*/
 
     @ManyToMany
     @JoinTable(name = "user_episode",
@@ -43,11 +50,44 @@ public class User {
     @JsonIgnore
     private List<Episode> episodes = new ArrayList<>();
 
-    public User(String email, String username, String password, String pictureUrl, Role role) {
+    public User(String email, String nickname, String password, String pictureUrl) {
         this.email = email;
-        this.username = username;
+        this.nickname = nickname;
         this.password = password;
         this.pictureUrl = pictureUrl;
-        this.role = role;
+        
+    }
+
+    public User(String s, String name, String password, String avatar, Role role) {
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(this.role);
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

@@ -98,7 +98,7 @@ public class SampleDataLoader implements CommandLineRunner {
 
         List<Actor> actor = IntStream.rangeClosed(1, 50)
                 .mapToObj(i -> new Actor(
-                        faker.name().firstName(), faker.name().lastName(), actorAvatar[random.nextInt(0,5)]
+                        faker.name().firstName(), faker.name().lastName(), actorAvatar[random.nextInt(5)]
                 )).collect(Collectors.toList());
         actorRepository.saveAll(actor);
 
@@ -110,7 +110,7 @@ public class SampleDataLoader implements CommandLineRunner {
 
         List<Serie> series = IntStream.rangeClosed(1, 25)
                 .mapToObj(i -> {
-                            int seriePictureNumber = random.nextInt(0, 8);
+                            int seriePictureNumber = random.nextInt(8);
                             Serie serie = new Serie(
                                     faker.book().title(),
                                     faker.book().publisher(),
@@ -145,7 +145,7 @@ public class SampleDataLoader implements CommandLineRunner {
                     episode.setEpisodeNumber(nbOfEpisodes);
                     episode.setDescription(faker.lorem().sentence());
                     episode.setReleaseDate(date);
-                    episode.setThumbnail(episodeThumbnails[random.nextInt(0,9 )]);
+                    episode.setThumbnail(episodeThumbnails[random.nextInt(9 )]);
                     episode.setTitle(faker.lorem().sentence());
                     episode.setSeasonNumber(nbOfSeason);
                     episode.setSerie(series.get(nbSerie));
@@ -164,7 +164,7 @@ public class SampleDataLoader implements CommandLineRunner {
                     if (i == 1) {
                         User userWithAdminRole = new User( "admin@gmail.com", "SuperAdmin", "password", "", roleAdmin);
                         return userWithAdminRole;
-                    } else if (i ==2 ) {
+                    } else if (i == 2 ) {
                         User userWithUserRole = new User( "user@gmail.com", "SuperUser", "password", "", roleUser);
                         return userWithUserRole;
                     } else {
@@ -208,4 +208,5 @@ public class SampleDataLoader implements CommandLineRunner {
                 }).collect(Collectors.toList());
         libraryRepository.saveAll(libraries);
     }
+
 }
