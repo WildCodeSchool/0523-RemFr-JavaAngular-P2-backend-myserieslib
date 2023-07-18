@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.*;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Random;
@@ -160,14 +161,22 @@ public class SampleDataLoader implements CommandLineRunner {
 
         List<User> users = IntStream.rangeClosed(1, 25)
                 .mapToObj(i -> {
-                    User user = new User(
-                            faker.internet().emailAddress(),
-                            faker.animal().name(),
-                            faker.internet().password(),
-                            faker.internet().avatar(),
-                            i == 1 ? roleAdmin : roleUser
-                    );
-                    return user;
+                    if (i == 1) {
+                        User userWithAdminRole = new User( "admin@gmail.com", "SuperAdmin", "password", "", roleAdmin);
+                        return userWithAdminRole;
+                    } else if (i ==2 ) {
+                        User userWithUserRole = new User( "user@gmail.com", "SuperUser", "password", "", roleUser);
+                        return userWithUserRole;
+                    } else {
+                        User user = new User(
+                                faker.internet().emailAddress(),
+                                faker.animal().name(),
+                                faker.internet().password(),
+                                faker.internet().avatar(),
+                                i == 1 ? roleAdmin : roleUser
+                        );
+                        return user;
+                    }
                 }).collect(Collectors.toList());
         userRepository.saveAll(users);
 
