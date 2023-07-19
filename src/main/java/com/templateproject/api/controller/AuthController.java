@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @RestController
@@ -44,7 +45,9 @@ public class AuthController {
 
     @PostMapping("/register")
     public User register(@RequestBody User newUser) {
+
         if (this.userRepository.findByEmail(newUser.getEmail()).isPresent()) {
+
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "User already exists with email " + newUser.getEmail());
         }
@@ -55,12 +58,11 @@ public class AuthController {
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND,
                                 "No ROLE_USER found"));
-        newUser.setRole((Role) Set.of(userRole));
+        newUser.setRole(userRole);
         return this.userRepository.save(newUser);
     }
-
-    @PostMapping("/login")
-    public LoginResponse login(@RequestBody User user) {
+        @PostMapping("/login")
+        public LoginResponse login(@RequestBody User user) {
 
         Authentication auth = this.authManager.authenticate(new UsernamePasswordAuthenticationToken(
                 user.getEmail(), user.getPassword()
