@@ -4,7 +4,7 @@ import com.templateproject.api.entity.Library;
 import com.templateproject.api.entity.User;
 
 public interface LibraryProjection {
-    String getUserUsername();
+    String getUserNickname();
     String getComment();
     String getScore();
 }
