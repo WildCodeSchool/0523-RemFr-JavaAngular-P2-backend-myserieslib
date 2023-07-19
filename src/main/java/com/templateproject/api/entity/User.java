@@ -55,10 +55,14 @@ public class User implements UserDetails {
         this.nickname = nickname;
         this.password = password;
         this.pictureUrl = pictureUrl;
-        
     }
 
-    public User(String s, String name, String password, String avatar, Role role) {
+    public User(String email, String nickname, String password, String pictureUrl, Role role) {
+        this.email = email;
+        this.nickname = nickname;
+        this.password = password;
+        this.pictureUrl = pictureUrl;
+        this.role = role;
     }
 
     @Override
