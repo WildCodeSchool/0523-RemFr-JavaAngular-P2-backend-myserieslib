@@ -4,6 +4,8 @@ import com.github.javafaker.Faker;
 import com.templateproject.api.entity.*;
 import com.templateproject.api.repository.*;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -98,7 +100,7 @@ public class SampleDataLoader implements CommandLineRunner {
 
         List<Actor> actor = IntStream.rangeClosed(1, 50)
                 .mapToObj(i -> new Actor(
-                        faker.name().firstName(), faker.name().lastName(), actorAvatar[random.nextInt(5)]
+                        faker.name().firstName(), faker.name().lastName(), actorAvatar[random.nextInt(0,5)]
                 )).collect(Collectors.toList());
         actorRepository.saveAll(actor);
 
@@ -110,7 +112,7 @@ public class SampleDataLoader implements CommandLineRunner {
 
         List<Serie> series = IntStream.rangeClosed(1, 25)
                 .mapToObj(i -> {
-                            int seriePictureNumber = random.nextInt(8);
+                            int seriePictureNumber = random.nextInt(0, 8);
                             Serie serie = new Serie(
                                     faker.book().title(),
                                     faker.book().publisher(),
@@ -145,7 +147,7 @@ public class SampleDataLoader implements CommandLineRunner {
                     episode.setEpisodeNumber(nbOfEpisodes);
                     episode.setDescription(faker.lorem().sentence());
                     episode.setReleaseDate(date);
-                    episode.setThumbnail(episodeThumbnails[random.nextInt(9 )]);
+                    episode.setThumbnail(episodeThumbnails[random.nextInt(0,9 )]);
                     episode.setTitle(faker.lorem().sentence());
                     episode.setSeasonNumber(nbOfSeason);
                     episode.setSerie(series.get(nbSerie));
@@ -159,13 +161,14 @@ public class SampleDataLoader implements CommandLineRunner {
         roleRepository.save(roleUser);
         roleRepository.save(roleAdmin);
 
+        PasswordEncoder password = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         List<User> users = IntStream.rangeClosed(1, 25)
                 .mapToObj(i -> {
                     if (i == 1) {
-                        User userWithAdminRole = new User( "admin@gmail.com", "SuperAdmin", "password", "", roleAdmin);
+                        User userWithAdminRole = new User( "admin@gmail.com", "SuperAdmin", password.encode("password"), "", roleAdmin);
                         return userWithAdminRole;
-                    } else if (i == 2 ) {
-                        User userWithUserRole = new User( "user@gmail.com", "SuperUser", "password", "", roleUser);
+                    } else if (i ==2 ) {
+                        User userWithUserRole = new User( "user@gmail.com", "SuperUser", password.encode("password"), "", roleUser);
                         return userWithUserRole;
                     } else {
                         User user = new User(
