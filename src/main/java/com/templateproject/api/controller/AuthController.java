@@ -59,6 +59,7 @@ public class AuthController {
                         new ResponseStatusException(HttpStatus.NOT_FOUND,
                                 "No ROLE_USER found"));
         newUser.setRole(userRole);
+        newUser.setPictureUrl("https://t3.ftcdn.net/jpg/04/17/42/50/360_F_417425057_Xwor2V8dV1MP6EysYr6rShFJwBMASGDq.jpg");
         return this.userRepository.save(newUser);
     }
         @PostMapping("/login")
