@@ -1,6 +1,7 @@
 package com.templateproject.api.repository;
 
 
+import com.templateproject.api.entity.Actor;
 import com.templateproject.api.entity.Serie;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
