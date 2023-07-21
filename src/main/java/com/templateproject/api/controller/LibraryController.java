@@ -10,6 +10,9 @@ import com.templateproject.api.repository.SerieRepository;
 import com.templateproject.api.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import com.templateproject.api.service.LibraryService;
@@ -23,7 +26,7 @@ public class LibraryController {
     private final LibraryRepository libraryRepository;
     private final UserRepository userRepository;
     private final SerieRepository serieRepository;
-    private final LibraryService libraryService; 
+    private final LibraryService libraryService;
 
     public LibraryController(LibraryRepository libraryRepositoryInjected, UserRepository userRepositoryInjected, SerieRepository serieRepositoryInjected, LibraryService libraryService) {
         this.libraryRepository = libraryRepositoryInjected;
@@ -54,39 +57,65 @@ public class LibraryController {
         return libraryRepository.findBySerieId(serie.getId());
     }
 
-    @GetMapping("/{userId}")
-    public List<Library> getAllUserSeries(@PathVariable UUID userId) {
-        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    @GetMapping("/user")
+    public List<Library> getAllUserSeries(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String email = (String) jwt.getClaims().get("sub");
+        User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return libraryRepository.findByUserId(user.getId());
     }
 
-    @GetMapping("/{userId}/in_progress")
-    public List<Library> getInProgress(@PathVariable UUID userId) {
-        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    @GetMapping("/in_progress")
+    public List<Library> getInProgress(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String email = (String) jwt.getClaims().get("sub");
+        User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return libraryRepository.findByUserAndStatus(user, LibraryStatus.IN_PROGRESS);
     }
 
-    @GetMapping("/{userId}/finished")
-    public List<Library> getFinished(@PathVariable UUID userId) {
-        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    @GetMapping("/not_started")
+    public List<Library> getNotStarted(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String email = (String) jwt.getClaims().get("sub");
+        User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return libraryRepository.findByUserAndStatus(user, LibraryStatus.NOT_STARTED);
+    }
+
+    @GetMapping("/finished")
+    public List<Library> getFinished(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String email = (String) jwt.getClaims().get("sub");
+        User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return libraryRepository.findByUserAndStatus(user, LibraryStatus.FINISHED);
     }
 
-    @GetMapping("/{userId}/series/{serieId}")
+    @GetMapping("/recently_seen")
+    public List<Library> getRecentlySeen(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String email = (String) jwt.getClaims().get("sub");
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return libraryRepository.findByUserAndStatus(user, LibraryStatus.RECENTLY_SEEN);
+    }
+
+    @GetMapping("/series/{serieId}")
     public ResponseEntity<Library> getUserSerieDetails(
-            @PathVariable UUID userId,
-            @PathVariable UUID serieId
+            @PathVariable UUID serieId,
+            Authentication authentication
     ) {
         Serie serie = this.serieRepository.findById(serieId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String email = (String) jwt.getClaims().get("sub");
+        User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Library library = libraryRepository.findByUserAndSerie(user, serie);
         return ResponseEntity.ok(library);
     }
 
-    @PostMapping("/{serieId}/{userId}")
-    public Library postLibrary(@PathVariable UUID serieId, @PathVariable UUID userId) {
+    @PostMapping("/add/{serieId}")
+    public Library postLibrary(Authentication authentication, @PathVariable UUID serieId) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String email = (String) jwt.getClaims().get("sub");
         Serie serie = this.serieRepository.findById(serieId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Library library = new Library(user, serie);
         return libraryRepository.save(library);
     }
@@ -104,13 +133,15 @@ public class LibraryController {
     }
 
 
-    @PutMapping("/{userId}/series/{serieId}/score")
+    @PutMapping("/series/{serieId}/score")
     public ResponseEntity<Library> updateScore(
-            @PathVariable UUID userId,
+            Authentication authentication,
             @PathVariable UUID serieId,
             @RequestBody Map<String, Integer> scoreMap
             ) {
-        Optional<User> optionalUser = userRepository.findById(userId);
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String email = (String) jwt.getClaims().get("sub");
+        Optional<User> optionalUser = userRepository.findByEmail(email);
         Optional<Serie> optionalSerie = serieRepository.findById(serieId);
 
         if (optionalUser.isPresent() && optionalSerie.isPresent()) {
@@ -128,13 +159,15 @@ public class LibraryController {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping("/{userId}/series/{seriedId}/comment")
+    @PutMapping("/series/{seriedId}/comment")
     public ResponseEntity<Library> updateComment(
-            @PathVariable UUID userId,
+            Authentication authentication,
             @PathVariable UUID seriedId,
             @RequestBody Map<String, String> commentMap
     ) {
-        Optional<User> optionalUser = userRepository.findById(userId);
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String email = (String) jwt.getClaims().get("sub");
+        Optional<User> optionalUser = userRepository.findByEmail(email);
         Optional<Serie> optionalSerie = serieRepository.findById(seriedId);
 
         if (optionalUser.isPresent() && optionalSerie.isPresent()) {
