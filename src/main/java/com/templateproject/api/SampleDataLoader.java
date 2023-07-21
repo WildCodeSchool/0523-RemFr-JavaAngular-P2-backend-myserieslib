@@ -1,9 +1,11 @@
 package com.templateproject.api;
 
+import com.github.javafaker.Cat;
 import com.github.javafaker.Faker;
 import com.templateproject.api.entity.*;
 import com.templateproject.api.repository.*;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -210,6 +212,80 @@ public class SampleDataLoader implements CommandLineRunner {
                     return library;
                 }).collect(Collectors.toList());
         libraryRepository.saveAll(libraries);
+
+        createSampleData();
     }
 
+    private void createSampleData() {
+        Serie serie = new Serie();
+        serie.setIsCompleted(false);
+        serie.setReleaseDate(LocalDate.now());
+        serie.setPictureUrlXL("https://cdn-uploads.gameblog.fr/img/news/413901_63bbfa0946ae2.jpg");
+        serie.setPictureUrlXS("https://fr.web.img2.acsta.net/pictures/23/01/12/12/36/0727474.jpg");
+        serie.setDescription("Pour Joel, la survie est une préoccupation quotidienne qu'il gère à sa manière. Mais quand son chemin croise celui d'Ellie, leur voyage à travers ce qui reste des États-Unis va mettre à rude épreuve leur humanité et leur volonté de survivre.");
+        serie.setName("The Last of Us");
+        serie.setProducer("Craig Mazin, Neil Druckmann");
+        serie.setTrailerURL("https://www.youtube.com/embed/Sh4MVJLUNNY");
+
+        Serie savedSerie = serieRepository.save(serie);
+
+        List<String> categoriesList = Arrays.asList(
+                "Action",
+                "Aventure",
+                "Drame",
+                "Horreur",
+                "Post-apocalyptique",
+                "Surive"
+        );
+        List<Category> savedCategories = new ArrayList<>();
+        for (String categoryName : categoriesList) {
+            Category category = new Category(categoryName);
+            savedCategories.add(categoryRepository.save(category));
+            savedSerie.getCategories().add(category);
+        }
+
+        List<Actor> actorsList = Arrays.asList(
+                new Actor("Pedro", "Pascal",
+                        "https://media.senscritique.com/media/000019177556/125x166/pedro_pascal.png"),
+                new Actor("Bella", "Ramsey",
+                        "https://media.senscritique.com/media/000021221708/125x166/bella_ramsey.jpg"),
+                new Actor("Gabriel", "Luna",
+                        "https://media.senscritique.com/media/000007113123/125x166/gabriel_luna.jpg"),
+                new Actor("Merle", "Dandridge",
+                        "https://media.senscritique.com/media/000020539769/125x166/merle_dandridge.jpg"),
+                new Actor("Nico", "Parker",
+                        "https://media.senscritique.com/media/000018614921/125x166/nico_parker.jpg"),
+                new Actor("Jeffrey", "Pierce",
+                        "https://media.senscritique.com/media/000020539770/125x166/jeffrey_pierce.jpg")
+        );
+        List<Actor> savedActors = new ArrayList<>();
+        for (Actor actorInfo : actorsList) {
+            savedActors.add(actorRepository.save(actorInfo));
+            savedSerie.getActors().add(actorInfo);
+        }
+
+        Episode episode1 = new Episode();
+        episode1.setEpisodeNumber(1);
+        episode1.setSeasonNumber(1);
+        episode1.setDescription("Vingt ans après qu'une épidémie fongique a ravagé la planète, les survivants Joel et Ellie sont chargés d'une mission qui pourrait tout changer.");
+        episode1.setReleaseDate(LocalDate.now());
+        episode1.setTitle("Quand tu es perdu dans les ténèbres");
+        episode1.setThumbnail("https://images-eu.ssl-images-amazon.com/images/S/pv-target-images/452fae0f26d7a8fecbbcac06045f902b694dc4f3bd85c3e71ff63c6b1282c1e3._RI_TTW_SX480_FMwebp_.jpg");
+
+        Episode episode2 = new Episode();
+        episode2.setEpisodeNumber(2);
+        episode2.setSeasonNumber(1);
+        episode2.setDescription("Joel, Tess et Ellie traversent un hôtel de Boston abandonné et inondé pour déposer Ellie avec un groupe de lucioles.");
+        episode2.setReleaseDate(LocalDate.now());
+        episode2.setTitle("Infecté");
+        episode2.setThumbnail("https://images-eu.ssl-images-amazon.com/images/S/pv-target-images/b45c8d08842925dadf1c1d8f5db72c153ddba37583e2b7b22225efc2d678d15e._RI_TTW_SX480_FMwebp_.png");
+
+        episode1.setSerie(savedSerie);
+        episode2.setSerie(savedSerie);
+
+        episodeRepository.save(episode1);
+        episodeRepository.save(episode2);
+
+        serieRepository.save(savedSerie);
+    }
 }
