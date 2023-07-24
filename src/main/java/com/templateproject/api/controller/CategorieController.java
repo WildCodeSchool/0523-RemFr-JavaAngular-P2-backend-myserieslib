@@ -1,12 +1,10 @@
 package com.templateproject.api.controller;
 
+import com.github.javafaker.Cat;
 import com.templateproject.api.entity.Category;
 import com.templateproject.api.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +22,15 @@ public class CategorieController {
     @GetMapping("")
     public List<Category> getCategories() {
         return this.categoryRepository.findAll();
+    }
+
+    @PostMapping("")
+    public Category createCategory(@RequestParam String categoryName) {
+        Category existingCategory = categoryRepository.findByName(categoryName);
+        if (existingCategory != null) {
+            return existingCategory;
+        }
+        Category newCategory = new Category(categoryName);
+        return categoryRepository.save(newCategory);
     }
 }

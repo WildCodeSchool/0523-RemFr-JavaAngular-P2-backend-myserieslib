@@ -25,6 +25,7 @@ public class Episode {
     private String title;
     private Integer seasonNumber;
     private String thumbnail;
+    @Column(columnDefinition = "text")
     private String description;
     private LocalDate releaseDate;
 
