@@ -91,4 +91,10 @@ public class SerieService {
         return serieRepository.save(serie);
     }
 
+    public List<Serie> getSeriesByCategory(UUID categoryId, int limit) {
+        LocalDate currentDate = LocalDate.now();
+        Pageable pageable = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "releaseDate"));
+        return serieRepository.findByCategories_IdAndReleaseDateLessThanEqual(categoryId, currentDate, pageable);
+    }
+
 }

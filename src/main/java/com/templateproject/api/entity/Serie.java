@@ -1,15 +1,11 @@
 package com.templateproject.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.github.javafaker.Bool;
-import com.github.javafaker.DateAndTime;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.cglib.core.Local;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -40,6 +36,7 @@ public class Serie {
     @JoinTable(name = "serie_category",
             joinColumns = @JoinColumn(name = "serie_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
+    @JsonBackReference
     private List<Category> categories = new ArrayList<>();
 
     @ManyToMany
