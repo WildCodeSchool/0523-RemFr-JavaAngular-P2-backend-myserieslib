@@ -19,7 +19,7 @@ public class UserService implements UserDetailsService {
 
         return (UserDetails) this.userRepository.findByEmail(username)
                 .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found with email " + username));
+                        new UsernameNotFoundException("Il n'y a aucun utilisateur avec cet email " + username));
 
     }
 }

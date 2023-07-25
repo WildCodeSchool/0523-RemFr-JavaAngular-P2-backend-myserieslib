@@ -1,8 +1,12 @@
 package com.templateproject.api.controller;
 
+import com.templateproject.api.dto.PasswordDTO;
 import com.templateproject.api.dto.UpdateUserDTO;
 import com.templateproject.api.entity.User;
+import com.templateproject.api.entity.UserMail;
 import com.templateproject.api.repository.UserRepository;
+import com.templateproject.api.service.MailService;
+import org.springframework.mail.MailException;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,9 +23,11 @@ import java.util.UUID;
 @RequestMapping("/api/users")
 public class UserController {
     private UserRepository userRepository;
+    private final MailService mailService;
 
-    UserController(UserRepository userRepositoryInjected) {
+    UserController(UserRepository userRepositoryInjected, MailService mailService) {
         this.userRepository = userRepositoryInjected;
+        this.mailService = mailService;
     }
 
     @GetMapping("")
@@ -75,5 +81,30 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('SCOPE_ROLE_ADMIN','SCOPE_ROLE_USER')")
     public String allAccess() {
         return "All access";
+    }
+
+    @GetMapping("/retrievePassword/{mail}")
+    public String sendMail(@PathVariable String mail) {
+        UserMail userMail = new UserMail(mail);
+        User user = this.userRepository.findByEmail(userMail.getEmailAddress()).orElseThrow();
+        if(user != null) {
+        try {
+            mailService.SendNotification(userMail);
+            return "Mail sent";
+        } catch (MailException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }} else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/change-password")
+    public User changePassword(Authentication authentication, @RequestBody PasswordDTO newPassword) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String email = (String) jwt.getClaims().get("sub");
+        User user = this.userRepository.findByEmail(email).orElseThrow();
+        PasswordEncoder password = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        user.setPassword(password.encode(newPassword.getPassword()));
+        return this.userRepository.save(user);
     }
 }

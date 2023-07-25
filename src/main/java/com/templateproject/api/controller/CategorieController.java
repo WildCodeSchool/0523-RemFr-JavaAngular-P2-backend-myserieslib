@@ -21,7 +21,7 @@ public class CategorieController {
 
     @GetMapping("")
     public List<Category> getCategories() {
-        return this.categoryRepository.findAll();
+        return this.categoryRepository.findAllWithSeries();
     }
 
     @PostMapping("")
