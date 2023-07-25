@@ -4,7 +4,6 @@ import com.templateproject.api.entity.*;
 import com.templateproject.api.repository.EpisodeRepository;
 import com.templateproject.api.repository.LibraryRepository;
 import com.templateproject.api.repository.SerieRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -86,6 +85,9 @@ public class LibraryService {
         Map<Category, Integer> categoryCount = new HashMap<>();
 
         for (Library library : libraries) {
+            if (library.getStatus() == LibraryStatus.NOT_STARTED) {
+                continue;
+            }
             List<Category> categories = library.getSerie().getCategories();
             for (Category category : categories) {
                 categoryCount.put(category, categoryCount.getOrDefault(category, 0) + 1);

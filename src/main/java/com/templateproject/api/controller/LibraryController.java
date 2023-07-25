@@ -62,42 +62,57 @@ public class LibraryController {
 
     @GetMapping("/user")
     public List<Library> getAllUserSeries(Authentication authentication) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String email = (String) jwt.getClaims().get("sub");
-        User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return libraryRepository.findByUserId(user.getId());
+        if (authentication!=null) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            String email = (String) jwt.getClaims().get("email");
+            User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            return libraryRepository.findByUserId(user.getId());
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Vous devez vous identifier");
     }
 
     @GetMapping("/in_progress")
     public List<Library> getInProgress(Authentication authentication) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String email = (String) jwt.getClaims().get("sub");
-        User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return libraryRepository.findByUserAndStatus(user, LibraryStatus.IN_PROGRESS);
+        if (authentication!=null) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            String email = (String) jwt.getClaims().get("email");
+            User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            return libraryRepository.findByUserAndStatus(user, LibraryStatus.IN_PROGRESS);
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Vous devez vous identifier");
     }
 
     @GetMapping("/not_started")
     public List<Library> getNotStarted(Authentication authentication) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String email = (String) jwt.getClaims().get("sub");
-        User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return libraryRepository.findByUserAndStatus(user, LibraryStatus.NOT_STARTED);
+        if (authentication !=null) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            String email = (String) jwt.getClaims().get("email");
+            User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            return libraryRepository.findByUserAndStatus(user, LibraryStatus.NOT_STARTED);
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Vous devez vous identifier");
     }
 
     @GetMapping("/finished")
     public List<Library> getFinished(Authentication authentication) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String email = (String) jwt.getClaims().get("sub");
-        User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return libraryRepository.findByUserAndStatus(user, LibraryStatus.FINISHED);
+        if (authentication!=null) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            String email = (String) jwt.getClaims().get("email");
+            User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            return libraryRepository.findByUserAndStatus(user, LibraryStatus.FINISHED);
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Vous devez vous identifier");
     }
 
     @GetMapping("/recently_seen")
     public List<Library> getRecentlySeen(Authentication authentication) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String email = (String) jwt.getClaims().get("sub");
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return libraryRepository.findByUserAndStatus(user, LibraryStatus.RECENTLY_SEEN);
+        if (authentication!=null) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            String email = (String) jwt.getClaims().get("email");
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            return libraryRepository.findByUserAndStatus(user, LibraryStatus.RECENTLY_SEEN);
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Vous devez vous identifier");
     }
 
     @GetMapping("/series/{serieId}")
@@ -106,21 +121,27 @@ public class LibraryController {
             Authentication authentication
     ) {
         Serie serie = this.serieRepository.findById(serieId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String email = (String) jwt.getClaims().get("sub");
-        User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        Library library = libraryRepository.findByUserAndSerie(user, serie);
-        return ResponseEntity.ok(library);
+        if(authentication != null) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            String email = (String) jwt.getClaims().get("email");
+            User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            Library library = libraryRepository.findByUserAndSerie(user, serie);
+            return ResponseEntity.ok(library);
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Vous devez vous identifier");
     }
 
     @PostMapping("/add/{serieId}")
     public Library postLibrary(Authentication authentication, @PathVariable UUID serieId) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String email = (String) jwt.getClaims().get("sub");
-        Serie serie = this.serieRepository.findById(serieId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        Library library = new Library(user, serie);
-        return libraryRepository.save(library);
+        if (authentication!=null) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            String email = (String) jwt.getClaims().get("email");
+            Serie serie = this.serieRepository.findById(serieId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            User user = this.userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            Library library = new Library(user, serie);
+            return libraryRepository.save(library);
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Vous devez vous identifier");
     }
 
     @PostMapping("/{serieId}/comments/{userId}")
@@ -142,10 +163,11 @@ public class LibraryController {
             @PathVariable UUID serieId,
             @RequestBody Map<String, Integer> scoreMap
             ) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String email = (String) jwt.getClaims().get("sub");
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        Optional<Serie> optionalSerie = serieRepository.findById(serieId);
+        if (authentication!=null) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            String email = (String) jwt.getClaims().get("email");
+            Optional<User> optionalUser = userRepository.findByEmail(email);
+            Optional<Serie> optionalSerie = serieRepository.findById(serieId);
 
         if (optionalUser.isPresent() && optionalSerie.isPresent()) {
             User user = optionalUser.get();
@@ -159,6 +181,7 @@ public class LibraryController {
                 return ResponseEntity.ok(updated);
             }
         }
+        }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
@@ -168,23 +191,26 @@ public class LibraryController {
             @PathVariable UUID seriedId,
             @RequestBody Map<String, String> commentMap
     ) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String email = (String) jwt.getClaims().get("sub");
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        Optional<Serie> optionalSerie = serieRepository.findById(seriedId);
+        if (authentication != null) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            String email = (String) jwt.getClaims().get("email");
+            Optional<User> optionalUser = userRepository.findByEmail(email);
+            Optional<Serie> optionalSerie = serieRepository.findById(seriedId);
 
-        if (optionalUser.isPresent() && optionalSerie.isPresent()) {
-            User user = optionalUser.get();
-            Serie serie = optionalSerie.get();
-            Library library = libraryRepository.findByUserAndSerie(user, serie);
+            if (optionalUser.isPresent() && optionalSerie.isPresent()) {
+                User user = optionalUser.get();
+                Serie serie = optionalSerie.get();
+                Library library = libraryRepository.findByUserAndSerie(user, serie);
 
-            if (library != null) {
-                String comment = commentMap.get("comment");
-                library.setComment(comment);
-                Library updated = libraryRepository.save(library);
-                return ResponseEntity.ok(updated);
+                if (library != null) {
+                    String comment = commentMap.get("comment");
+                    library.setComment(comment);
+                    Library updated = libraryRepository.save(library);
+                    return ResponseEntity.ok(updated);
+                }
             }
         }
+
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
@@ -194,23 +220,26 @@ public class LibraryController {
             @PathVariable UUID serieId,
             @RequestBody Map<String, List<Integer>> checkboxeMap
     ) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String email = (String) jwt.getClaims().get("sub");
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        Optional<Serie> optionalSerie = serieRepository.findById(serieId);
+        if (authentication != null) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            String email = (String) jwt.getClaims().get("email");
+            Optional<User> optionalUser = userRepository.findByEmail(email);
+            Optional<Serie> optionalSerie = serieRepository.findById(serieId);
 
-        if (optionalUser.isPresent() && optionalSerie.isPresent()) {
-            User user = optionalUser.get();
-            Serie serie = optionalSerie.get();
-            Library library = libraryRepository.findByUserAndSerie(user, serie);
+            if (optionalUser.isPresent() && optionalSerie.isPresent()) {
+                User user = optionalUser.get();
+                Serie serie = optionalSerie.get();
+                Library library = libraryRepository.findByUserAndSerie(user, serie);
 
-            if (library != null) {
-                List<Integer> checkboxes = checkboxeMap.get("checkboxes");
-                library.setCheckedEpisodes(checkboxes);
-                Library updated = libraryRepository.save(library);
-                return ResponseEntity.ok(updated);
+                if (library != null) {
+                    List<Integer> checkboxes = checkboxeMap.get("checkboxes");
+                    library.setCheckedEpisodes(checkboxes);
+                    Library updated = libraryRepository.save(library);
+                    return ResponseEntity.ok(updated);
+                }
             }
         }
+
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
@@ -220,25 +249,28 @@ public class LibraryController {
             @PathVariable UUID serieId,
             @RequestBody Map<String, String> statusMap
     ) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        String email = (String) jwt.getClaims().get("sub");
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        Optional<Serie> optionalSerie = serieRepository.findById(serieId);
+        if (authentication!= null) {
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            String email = (String) jwt.getClaims().get("email");
+            Optional<User> optionalUser = userRepository.findByEmail(email);
+            Optional<Serie> optionalSerie = serieRepository.findById(serieId);
 
-        if (optionalUser.isPresent() && optionalSerie.isPresent()) {
-            User user = optionalUser.get();
-            Serie serie = optionalSerie.get();
-            Library library = libraryRepository.findByUserAndSerie(user, serie);
+            if (optionalUser.isPresent() && optionalSerie.isPresent()) {
+                User user = optionalUser.get();
+                Serie serie = optionalSerie.get();
+                Library library = libraryRepository.findByUserAndSerie(user, serie);
 
-            if (library != null) {
-                String status = statusMap.get("status");
-                LibraryStatus libraryStatus;
-                libraryStatus = LibraryStatus.valueOf(status.toUpperCase());
-                library.setStatus(libraryStatus);
-                Library updateLibrary = libraryRepository.save(library);
-                return ResponseEntity.ok(updateLibrary);
+                if (library != null) {
+                    String status = statusMap.get("status");
+                    LibraryStatus libraryStatus;
+                    libraryStatus = LibraryStatus.valueOf(status.toUpperCase());
+                    library.setStatus(libraryStatus);
+                    Library updateLibrary = libraryRepository.save(library);
+                    return ResponseEntity.ok(updateLibrary);
+                }
             }
         }
+
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
