@@ -54,6 +54,12 @@ public class LibraryController {
         return libraryRepository.findBySerieId(serie.getId());
     }
 
+    @GetMapping("/{userId}")
+    public List<Library> getAllUserSeriesSelected(@PathVariable UUID userId) {
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return libraryRepository.findByUserId(userId);
+    }
+
     @GetMapping("/user")
     public List<Library> getAllUserSeries(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -177,6 +183,60 @@ public class LibraryController {
                 library.setComment(comment);
                 Library updated = libraryRepository.save(library);
                 return ResponseEntity.ok(updated);
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/series/{serieId}/checkboxe-episode")
+    public ResponseEntity<Library> updateCheckEpisode(
+            Authentication authentication,
+            @PathVariable UUID serieId,
+            @RequestBody Map<String, List<Integer>> checkboxeMap
+    ) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String email = (String) jwt.getClaims().get("sub");
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        Optional<Serie> optionalSerie = serieRepository.findById(serieId);
+
+        if (optionalUser.isPresent() && optionalSerie.isPresent()) {
+            User user = optionalUser.get();
+            Serie serie = optionalSerie.get();
+            Library library = libraryRepository.findByUserAndSerie(user, serie);
+
+            if (library != null) {
+                List<Integer> checkboxes = checkboxeMap.get("checkboxes");
+                library.setCheckedEpisodes(checkboxes);
+                Library updated = libraryRepository.save(library);
+                return ResponseEntity.ok(updated);
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/series/{serieId}/status")
+    public ResponseEntity<Library> updateStatus(
+            Authentication authentication,
+            @PathVariable UUID serieId,
+            @RequestBody Map<String, String> statusMap
+    ) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String email = (String) jwt.getClaims().get("sub");
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        Optional<Serie> optionalSerie = serieRepository.findById(serieId);
+
+        if (optionalUser.isPresent() && optionalSerie.isPresent()) {
+            User user = optionalUser.get();
+            Serie serie = optionalSerie.get();
+            Library library = libraryRepository.findByUserAndSerie(user, serie);
+
+            if (library != null) {
+                String status = statusMap.get("status");
+                LibraryStatus libraryStatus;
+                libraryStatus = LibraryStatus.valueOf(status.toUpperCase());
+                library.setStatus(libraryStatus);
+                Library updateLibrary = libraryRepository.save(library);
+                return ResponseEntity.ok(updateLibrary);
             }
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);

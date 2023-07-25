@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,6 +22,9 @@ public class Library {
 
     private Integer score;
     private String comment;
+
+    @ElementCollection
+    private List<Integer> checkedEpisodes = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")

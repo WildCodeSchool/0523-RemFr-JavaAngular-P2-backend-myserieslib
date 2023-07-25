@@ -1,9 +1,14 @@
 package com.templateproject.api.controller;
 
+import com.templateproject.api.dto.UpdateUserDTO;
 import com.templateproject.api.entity.User;
 import com.templateproject.api.repository.UserRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,6 +27,21 @@ public class UserController {
     @GetMapping("")
     public List<User> getAll() {
         return this.userRepository.findAll();
+    }
+
+    @PutMapping("")
+    public User updateUser(Authentication authentication, @RequestBody UpdateUserDTO user) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String email = (String) jwt.getClaims().get("sub");
+        User userInDatabase = this.userRepository.findByEmail(email).orElseThrow();
+        userInDatabase.setPictureUrl(user.getPictureUrl());
+        userInDatabase.setEmail(user.getEmail());
+        userInDatabase.setNickname(user.getNickname());
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            PasswordEncoder password = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+            userInDatabase.setPassword(password.encode(user.getPassword()));
+        }
+        return this.userRepository.save(userInDatabase);
     }
 
     @GetMapping("/{id}")
