@@ -1,13 +1,7 @@
 package com.templateproject.api.controller;
 
-import com.templateproject.api.entity.Library;
-import com.templateproject.api.entity.LibraryStatus;
-import com.templateproject.api.entity.Serie;
-import com.templateproject.api.entity.User;
-import com.templateproject.api.repository.LibraryProjection;
-import com.templateproject.api.repository.LibraryRepository;
-import com.templateproject.api.repository.SerieRepository;
-import com.templateproject.api.repository.UserRepository;
+import com.templateproject.api.entity.*;
+import com.templateproject.api.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -27,12 +21,14 @@ public class LibraryController {
     private final UserRepository userRepository;
     private final SerieRepository serieRepository;
     private final LibraryService libraryService;
+    private final EpisodeRepository episodeRepository;
 
-    public LibraryController(LibraryRepository libraryRepositoryInjected, UserRepository userRepositoryInjected, SerieRepository serieRepositoryInjected, LibraryService libraryService) {
+    public LibraryController(LibraryRepository libraryRepositoryInjected, UserRepository userRepositoryInjected, SerieRepository serieRepositoryInjected, LibraryService libraryService, EpisodeRepository episodeRepositoryInjected) {
         this.libraryRepository = libraryRepositoryInjected;
         this.userRepository = userRepositoryInjected;
         this.serieRepository = serieRepositoryInjected;
         this.libraryService = libraryService;
+        this.episodeRepository = episodeRepositoryInjected;
     }
 
     @GetMapping("")
@@ -116,6 +112,17 @@ public class LibraryController {
         return ResponseEntity.ok(library);
     }
 
+    @GetMapping("/{userId}/series/{serieId}")
+    public ResponseEntity<Library> getUserSerieDetailsSelected(
+            @PathVariable UUID userId,
+            @PathVariable UUID serieId
+    ) {
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Serie serie = this.serieRepository.findById(serieId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Library library = libraryRepository.findByUserAndSerie(user, serie);
+        return ResponseEntity.ok(library);
+    }
+
     @PostMapping("/add/{serieId}")
     public Library postLibrary(Authentication authentication, @PathVariable UUID serieId) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -190,6 +197,8 @@ public class LibraryController {
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
+
+
 
     @PutMapping("/series/{serieId}/checkboxe-episode")
     public ResponseEntity<Library> updateCheckEpisode(
