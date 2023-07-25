@@ -19,6 +19,18 @@ public class TokenService {
         this.encoder = encoder;
     }
 
+
+    public String generateTokenRetrievePassword(String mail) {
+        JwsHeader header = JwsHeader.with(() -> "HS256").build();
+        Instant now = Instant.now();
+        JwtClaimsSet payload = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .expiresAt(now.plus(15, ChronoUnit.MINUTES))
+                .subject(mail)
+                .build();
+        return this.encoder.encode(JwtEncoderParameters.from(header, payload)).getTokenValue();
+    }
     public String generateToken(Authentication auth) {
         JwsHeader header = JwsHeader.with(() -> "HS256").build();
 
