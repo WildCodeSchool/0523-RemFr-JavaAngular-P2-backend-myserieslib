@@ -235,15 +235,11 @@ public class LibraryController {
 
             if (library != null) {
                 String status = statusMap.get("status");
-                if (status != null && !status.isEmpty()) {
-                    LibraryStatus libraryStatus;
-                    libraryStatus = LibraryStatus.valueOf(status.toUpperCase());
-                    library.setStatus(libraryStatus);
-                    Library updateLibrary = libraryRepository.save(library);
-                    return ResponseEntity.ok(updateLibrary);
-                } else {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-                }
+                LibraryStatus libraryStatus;
+                libraryStatus = LibraryStatus.valueOf(status.toUpperCase());
+                library.setStatus(libraryStatus);
+                Library updateLibrary = libraryRepository.save(library);
+                return ResponseEntity.ok(updateLibrary);
             }
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
