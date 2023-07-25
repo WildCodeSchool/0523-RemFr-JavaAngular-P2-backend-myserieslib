@@ -167,10 +167,10 @@ public class SampleDataLoader implements CommandLineRunner {
         List<User> users = IntStream.rangeClosed(1, 25)
                 .mapToObj(i -> {
                     if (i == 1) {
-                        User userWithAdminRole = new User( "admin@gmail.com", "SuperAdmin", password.encode("password"), "", roleAdmin);
+                        User userWithAdminRole = new User( "admin@gmail.com", "SuperAdmin", password.encode("password"), "https://newprofilepic.photo-cdn.net//assets/images/article/profile.jpg?4d355bd", roleAdmin);
                         return userWithAdminRole;
                     } else if (i ==2 ) {
-                        User userWithUserRole = new User( "user@gmail.com", "SuperUser", password.encode("password"), "", roleUser);
+                        User userWithUserRole = new User( "user@gmail.com", "SuperUser", password.encode("password"), "https://newprofilepic.photo-cdn.net//assets/images/article/profile.jpg?4d355bd", roleUser);
                         return userWithUserRole;
                     } else {
                         User user = new User(
