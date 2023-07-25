@@ -4,7 +4,6 @@ import com.templateproject.api.entity.*;
 import com.templateproject.api.repository.EpisodeRepository;
 import com.templateproject.api.repository.LibraryRepository;
 import com.templateproject.api.repository.SerieRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +12,7 @@ import com.templateproject.api.repository.UserRepository;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -79,4 +79,28 @@ public class LibraryService {
 
         return seriesRatings;
     }
+
+    public List<Category> getMostFrequentCategories(UUID userId, int limit) {
+        List<Library> libraries = libraryRepository.findByUserId(userId);
+        Map<Category, Integer> categoryCount = new HashMap<>();
+
+        for (Library library : libraries) {
+            if (library.getStatus() == LibraryStatus.NOT_STARTED) {
+                continue;
+            }
+            List<Category> categories = library.getSerie().getCategories();
+            for (Category category : categories) {
+                categoryCount.put(category, categoryCount.getOrDefault(category, 0) + 1);
+            }
+        }
+
+        List<Category> mostFrequentCategories = categoryCount.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(limit)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+        return mostFrequentCategories;
+    }
+
 }

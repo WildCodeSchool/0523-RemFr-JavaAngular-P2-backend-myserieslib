@@ -2,6 +2,7 @@ package com.templateproject.api.repository;
 
 
 import com.templateproject.api.entity.Actor;
+import com.templateproject.api.entity.Category;
 import com.templateproject.api.entity.Serie;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,5 +27,8 @@ public interface SerieRepository extends JpaRepository<Serie, UUID> {
 
     @Query("SELECT s, GROUP_CONCAT(c.name) FROM Serie s JOIN s.categories c  WHERE s.producer LIKE CONCAT('%', :title, '%')  AND (c.id = :category OR :category is null)  GROUP BY s.id")
     List<Serie> findSeriesFromProducer(@Param("title") String title, @Param("category") UUID category);
+
+    List<Serie> findByCategories_IdAndReleaseDateLessThanEqual(UUID categoryId, LocalDate currentDate, Pageable pageable);
+
 
 }

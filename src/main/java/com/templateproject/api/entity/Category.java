@@ -1,6 +1,6 @@
 package com.templateproject.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class Category {
     private String name;
 
     @ManyToMany(mappedBy = "categories")
-    @JsonIgnore
+    @JsonManagedReference
     private List<Serie> series = new ArrayList<>();
 
     public Category(String name) {

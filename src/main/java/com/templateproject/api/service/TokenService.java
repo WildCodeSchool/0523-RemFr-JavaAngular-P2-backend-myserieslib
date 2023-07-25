@@ -19,7 +19,6 @@ public class TokenService {
         this.encoder = encoder;
     }
 
-
     public String generateTokenRetrievePassword(String mail) {
         JwsHeader header = JwsHeader.with(() -> "HS256").build();
         Instant now = Instant.now();
@@ -36,21 +35,17 @@ public class TokenService {
 
         String scope = auth.getAuthorities().stream()
                 .map((authority) -> authority.getAuthority())
-                .collect(Collectors.joining(" ")); // ex: "USER ADMIN"
+                .collect(Collectors.joining(" "));
 
-        // pour récupérer un attribut de l'utilisateur connecté
         User userOrigin = (User) auth.getPrincipal();
 
         Instant now = Instant.now();
         JwtClaimsSet payload = JwtClaimsSet.builder()
                 .issuer("self")
-                // a été créé à l'instant
                 .issuedAt(now)
-                // expire dans une heure
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
-                // s'adresse à l'utilisateur connecté : ici renvoi son email
-                .subject(auth.getName())
-                // scope: correspond aux rôles de l'utilisateur
+                .subject(userOrigin.getId().toString())
+                .claim("email", userOrigin.getEmail())
                 .claim("scope", scope)
                 .claim("picture", userOrigin.getPictureUrl())
                 .build();

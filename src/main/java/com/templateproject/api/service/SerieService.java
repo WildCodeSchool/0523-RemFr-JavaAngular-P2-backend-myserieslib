@@ -45,7 +45,7 @@ public class SerieService {
 
     public Serie getSerieById(UUID id) {
         return serieRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Serie not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Aucune série trouvée"));
     }
 
     public List<Serie> filterSerie(String title, String filterType, UUID category) {
@@ -65,7 +65,7 @@ public class SerieService {
 
     public Serie updateSerie(UUID id, Serie serie, UUID actorId, UUID categoryId) {
         Serie serieFound = serieRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Serie not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Aucune série trouvée"));
 
         serieFound.setName(serie.getName());
         serieFound.setProducer(serie.getProducer());
@@ -78,17 +78,23 @@ public class SerieService {
 
         if (actorId != null) {
             Actor actorToUpdate = actorRepository.findById(actorId)
-                    .orElseThrow(() -> new IllegalArgumentException("Actor not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("Aucun acteur trouvé"));
             serieFound.getActors().add(actorToUpdate);
         }
 
         if (categoryId != null) {
             Category categoryToUpdate = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("Aucune catégorie trouvée"));
             serieFound.getCategories().add(categoryToUpdate);
         }
 
         return serieRepository.save(serie);
+    }
+
+    public List<Serie> getSeriesByCategory(UUID categoryId, int limit) {
+        LocalDate currentDate = LocalDate.now();
+        Pageable pageable = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "releaseDate"));
+        return serieRepository.findByCategories_IdAndReleaseDateLessThanEqual(categoryId, currentDate, pageable);
     }
 
 }

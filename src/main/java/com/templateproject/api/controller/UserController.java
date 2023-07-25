@@ -92,7 +92,7 @@ public class UserController {
             mailService.SendNotification(userMail);
             return "Mail sent";
         } catch (MailException e) {
-            return throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }} else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

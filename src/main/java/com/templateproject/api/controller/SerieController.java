@@ -1,5 +1,6 @@
 package com.templateproject.api.controller;
 
+import com.templateproject.api.entity.Category;
 import com.templateproject.api.entity.Serie;
 import com.templateproject.api.service.SerieService;
 
@@ -53,4 +54,11 @@ public class SerieController {
     public List<Serie> getSeries(@RequestParam(name="title", required = false) String title, @RequestParam(name="filter", required=false) String filterType, @RequestParam(name="category", required = false) UUID category) {
         return this.serieService.filterSerie(title, filterType, category);
     }
+
+    @GetMapping("/categories/{categoryId}/series")
+    public ResponseEntity<List<Serie>> getTopSeriesByCategory(@PathVariable UUID categoryId, @RequestParam int limit) {
+        List<Serie> series = serieService.getSeriesByCategory(categoryId, limit);
+        return new ResponseEntity<>(series, HttpStatus.OK);
+    }
+
 }
