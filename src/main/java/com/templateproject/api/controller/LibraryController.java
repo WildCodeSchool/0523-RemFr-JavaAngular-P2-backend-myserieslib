@@ -1,9 +1,6 @@
 package com.templateproject.api.controller;
 
-import com.templateproject.api.entity.Library;
-import com.templateproject.api.entity.LibraryStatus;
-import com.templateproject.api.entity.Serie;
-import com.templateproject.api.entity.User;
+import com.templateproject.api.entity.*;
 import com.templateproject.api.repository.LibraryProjection;
 import com.templateproject.api.repository.LibraryRepository;
 import com.templateproject.api.repository.SerieRepository;
@@ -188,5 +185,10 @@ public class LibraryController {
     @DeleteMapping("/{id}")
     public void deleteSeries(@PathVariable UUID id) {
         this.libraryRepository.deleteById(id);
+    }
+
+    @GetMapping("/users/{userId}/frequent-categories")
+    public List<Category> getMostFrequentCategories(@PathVariable UUID userId, @RequestParam(defaultValue = "5") int limit) {
+        return libraryService.getMostFrequentCategories(userId, limit);
     }
 }
