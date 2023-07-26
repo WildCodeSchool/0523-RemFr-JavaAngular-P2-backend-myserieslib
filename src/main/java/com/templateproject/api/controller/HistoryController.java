@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -47,7 +46,7 @@ public class HistoryController {
     @GetMapping("/user")
     public List<History> getByUser(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
-        String email = (String) jwt.getClaims().get("sub");
+        String email = (String) jwt.getClaims().get("email");
         User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return historyRepository.findByUserId(user.getId());
     }
@@ -72,7 +71,7 @@ public class HistoryController {
             @PathVariable UUID episodeId
     ) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
-        String email = (String) jwt.getClaims().get("sub");
+        String email = (String) jwt.getClaims().get("email");
         User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Episode episode = episodeRepository.findById(episodeId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         History history = new History(user, episode);

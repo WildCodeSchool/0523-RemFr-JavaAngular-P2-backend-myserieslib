@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -15,6 +16,8 @@ public class History {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    private LocalDateTime addedDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -27,5 +30,6 @@ public class History {
     public History(User user, Episode episode) {
         this.user = user;
         this.episode = episode;
+        this.addedDate = LocalDateTime.now();
     }
 }
