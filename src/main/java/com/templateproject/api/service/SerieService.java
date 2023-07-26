@@ -41,21 +41,7 @@ public class SerieService {
 
     public Serie createSerie(CreateSerieDTO newSerie) {
         Serie serie = new Serie();
-        serie.setName(newSerie.getName());
-        serie.setDescription(newSerie.getDescription());
-        serie.setReleaseDate(newSerie.getReleaseDate());
-        serie.setIsCompleted(newSerie.getIsCompleted());
-        serie.setPictureUrlXL(newSerie.getPictureUrlXL());
-        serie.setPictureUrlXS(newSerie.getPictureUrlXS());
-        serie.setProducer(newSerie.getProducer());
-        serie.setTrailerURL(newSerie.getTrailerURL());
-        for (int i = 0; i<newSerie.getActors().size(); i++) {
-            serie.getActors().add(newSerie.getActors().get(i));
-        }
-        for (int i = 0; i<newSerie.getCategory().size(); i++) {
-            serie.getCategories().add(newSerie.getCategory().get(i));
-        }
-        return serieRepository.save(serie);
+        return changeOrCreateSerie(serie, newSerie);
     }
 
     public List<Serie> getTrendingSeries(int limit) {
@@ -84,31 +70,32 @@ public class SerieService {
         return this.serieRepository.findSeriesFromTitle(title, category);
     }
 
-    public Serie updateSerie(UUID id, Serie serie, UUID actorId, UUID categoryId) {
+    public Serie updateSerie(UUID id, CreateSerieDTO newSerie) {
         Serie serieFound = serieRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Aucune série trouvée"));
 
-        serieFound.setName(serie.getName());
-        serieFound.setProducer(serie.getProducer());
-        serieFound.setPictureUrlXL(serie.getPictureUrlXL());
-        serieFound.setPictureUrlXS(serie.getPictureUrlXS());
-        serieFound.setTrailerURL(serie.getTrailerURL());
-        serieFound.setReleaseDate(serie.getReleaseDate());
-        serieFound.setDescription(serie.getDescription());
-        serieFound.setIsCompleted(serie.getIsCompleted());
+        return changeOrCreateSerie(serieFound, newSerie);
+    }
 
-        if (actorId != null) {
-            Actor actorToUpdate = actorRepository.findById(actorId)
-                    .orElseThrow(() -> new IllegalArgumentException("Aucun acteur trouvé"));
-            serieFound.getActors().add(actorToUpdate);
+    public Serie changeOrCreateSerie(Serie serie, CreateSerieDTO newSerie) {
+        serie.setName(newSerie.getName());
+        serie.setDescription(newSerie.getDescription());
+        serie.setReleaseDate(newSerie.getReleaseDate());
+        serie.setIsCompleted(newSerie.getIsCompleted());
+        serie.setPictureUrlXL(newSerie.getPictureUrlXL());
+        serie.setPictureUrlXS(newSerie.getPictureUrlXS());
+        serie.setProducer(newSerie.getProducer());
+        serie.setTrailerURL(newSerie.getTrailerURL());
+
+        serie.getActors().clear();
+        serie.getCategories().clear();
+
+        for (int i = 0; i<newSerie.getActors().size(); i++) {
+            serie.getActors().add(newSerie.getActors().get(i));
         }
-
-        if (categoryId != null) {
-            Category categoryToUpdate = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new IllegalArgumentException("Aucune catégorie trouvée"));
-            serieFound.getCategories().add(categoryToUpdate);
+        for (int i = 0; i<newSerie.getCategory().size(); i++) {
+            serie.getCategories().add(newSerie.getCategory().get(i));
         }
-
         return serieRepository.save(serie);
     }
 
@@ -122,5 +109,12 @@ public class SerieService {
                 .collect(Collectors.toList());
     }
 
+
+    public void delete(UUID id) {
+        Serie serieToDelete = this.serieRepository.findById(id).orElseThrow();
+        serieToDelete.getActors().clear();
+        serieToDelete.getCategories().clear();
+        this.serieRepository.delete(serieToDelete);
+    }
 
 }

@@ -38,11 +38,14 @@ public class SerieController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Serie> update(@PathVariable("id") UUID id,
-                                        @RequestBody Serie serie,
-                                        @RequestParam(required = false) UUID actorId,
-                                        @RequestParam(required = false) UUID categoryId) {
-        Serie updatedSerie = serieService.updateSerie(id, serie, actorId, categoryId);
+                                        @RequestBody CreateSerieDTO serie) {
+        Serie updatedSerie = serieService.updateSerie(id, serie);
         return new ResponseEntity<>(updatedSerie, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") UUID id) {
+        this.serieService.delete(id);
     }
 
     @GetMapping("/{id}")
@@ -61,5 +64,7 @@ public class SerieController {
         List<SerieDto> series = serieService.getSeriesByCategory(categoryId, limit);
         return new ResponseEntity<>(series, HttpStatus.OK);
     }
+
+
 
 }
