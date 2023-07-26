@@ -1,6 +1,7 @@
 package com.templateproject.api.service;
 
 import com.templateproject.api.dto.CreateSerieDTO;
+import com.templateproject.api.dto.SerieDto;
 import com.templateproject.api.entity.Actor;
 import com.templateproject.api.entity.Category;
 import com.templateproject.api.entity.Serie;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class SerieService {
@@ -28,6 +30,9 @@ public class SerieService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private DtoConversionService dtoConversionService;
 
 
     public List<Serie> findAll() {
@@ -107,10 +112,15 @@ public class SerieService {
         return serieRepository.save(serie);
     }
 
-    public List<Serie> getSeriesByCategory(UUID categoryId, int limit) {
+    public List<SerieDto> getSeriesByCategory(UUID categoryId, int limit) {
         LocalDate currentDate = LocalDate.now();
         Pageable pageable = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "releaseDate"));
-        return serieRepository.findByCategories_IdAndReleaseDateLessThanEqual(categoryId, currentDate, pageable);
+        List<Serie> series = serieRepository.findByCategories_IdAndReleaseDateLessThanEqual(categoryId, currentDate, pageable);
+
+        return series.stream()
+                .map(dtoConversionService::convertToSerieDto)
+                .collect(Collectors.toList());
     }
+
 
 }
