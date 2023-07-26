@@ -1,5 +1,6 @@
 package com.templateproject.api.service;
 
+import com.templateproject.api.dto.CreateSerieDTO;
 import com.templateproject.api.entity.Actor;
 import com.templateproject.api.entity.Category;
 import com.templateproject.api.entity.Serie;
@@ -33,7 +34,22 @@ public class SerieService {
         return serieRepository.findAll();
     }
 
-    public Serie createSerie(Serie serie) {
+    public Serie createSerie(CreateSerieDTO newSerie) {
+        Serie serie = new Serie();
+        serie.setName(newSerie.getName());
+        serie.setDescription(newSerie.getDescription());
+        serie.setReleaseDate(newSerie.getReleaseDate());
+        serie.setIsCompleted(newSerie.getIsCompleted());
+        serie.setPictureUrlXL(newSerie.getPictureUrlXL());
+        serie.setPictureUrlXS(newSerie.getPictureUrlXS());
+        serie.setProducer(newSerie.getProducer());
+        serie.setTrailerURL(newSerie.getTrailerURL());
+        for (int i = 0; i<newSerie.getActors().size(); i++) {
+            serie.getActors().add(newSerie.getActors().get(i));
+        }
+        for (int i = 0; i<newSerie.getCategory().size(); i++) {
+            serie.getCategories().add(newSerie.getCategory().get(i));
+        }
         return serieRepository.save(serie);
     }
 

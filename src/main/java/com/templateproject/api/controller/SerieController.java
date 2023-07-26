@@ -1,6 +1,6 @@
 package com.templateproject.api.controller;
 
-import com.templateproject.api.entity.Category;
+import com.templateproject.api.dto.CreateSerieDTO;
 import com.templateproject.api.entity.Serie;
 import com.templateproject.api.service.SerieService;
 
@@ -24,8 +24,8 @@ public class SerieController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Serie> create(@RequestBody Serie serie) {
-        Serie createdSerie = serieService.createSerie(serie);
+    public ResponseEntity<Serie> create(@RequestBody CreateSerieDTO newSerie) {
+        Serie createdSerie = serieService.createSerie(newSerie);
         return new ResponseEntity<>(createdSerie, HttpStatus.CREATED);
     }
 
