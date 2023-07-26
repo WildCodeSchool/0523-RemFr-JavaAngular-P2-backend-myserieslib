@@ -22,7 +22,7 @@ public class Category {
     private String name;
 
     @ManyToMany(mappedBy = "categories")
-    @JsonManagedReference
+    @JsonIgnore
     private List<Serie> series = new ArrayList<>();
 
     public Category(String name) {
