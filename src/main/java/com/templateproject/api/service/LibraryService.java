@@ -1,5 +1,6 @@
 package com.templateproject.api.service;
 
+import com.templateproject.api.dto.CategoryDto;
 import com.templateproject.api.entity.*;
 import com.templateproject.api.repository.EpisodeRepository;
 import com.templateproject.api.repository.LibraryRepository;
@@ -29,6 +30,9 @@ public class LibraryService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private DtoConversionService dtoConversionService;
 
     public List<Library> findAll() {
         return libraryRepository.findAll();
@@ -80,7 +84,7 @@ public class LibraryService {
         return seriesRatings;
     }
 
-    public List<Category> getMostFrequentCategories(UUID userId, int limit) {
+    public List<CategoryDto> getMostFrequentCategories(UUID userId, int limit) {
         List<Library> libraries = libraryRepository.findByUserId(userId);
         Map<Category, Integer> categoryCount = new HashMap<>();
 
@@ -100,7 +104,10 @@ public class LibraryService {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
-        return mostFrequentCategories;
+        return mostFrequentCategories.stream()
+                .map(dtoConversionService::convertToCategoryDto)
+                .collect(Collectors.toList());
     }
+
 
 }

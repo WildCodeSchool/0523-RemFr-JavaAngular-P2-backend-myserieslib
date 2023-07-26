@@ -5,10 +5,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import static org.hibernate.annotations.OnDeleteAction.CASCADE;
 
 @Entity
 @Data
@@ -22,6 +24,7 @@ public class Category {
     private String name;
 
     @ManyToMany(mappedBy = "categories")
+    @OnDelete(action = CASCADE)
     @JsonIgnore
     private List<Serie> series = new ArrayList<>();
 

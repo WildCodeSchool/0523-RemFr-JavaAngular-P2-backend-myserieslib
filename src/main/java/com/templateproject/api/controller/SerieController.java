@@ -1,6 +1,7 @@
 package com.templateproject.api.controller;
 
 import com.templateproject.api.dto.CreateSerieDTO;
+import com.templateproject.api.dto.SerieDto;
 import com.templateproject.api.entity.Serie;
 import com.templateproject.api.service.SerieService;
 
@@ -56,8 +57,8 @@ public class SerieController {
     }
 
     @GetMapping("/categories/{categoryId}/series")
-    public ResponseEntity<List<Serie>> getTopSeriesByCategory(@PathVariable UUID categoryId, @RequestParam int limit) {
-        List<Serie> series = serieService.getSeriesByCategory(categoryId, limit);
+    public ResponseEntity<List<SerieDto>> getTopSeriesByCategory(@PathVariable UUID categoryId, @RequestParam int limit) {
+        List<SerieDto> series = serieService.getSeriesByCategory(categoryId, limit);
         return new ResponseEntity<>(series, HttpStatus.OK);
     }
 
