@@ -1,5 +1,6 @@
 package com.templateproject.api.controller;
 
+import com.templateproject.api.dto.CategoryDto;
 import com.templateproject.api.entity.*;
 import com.templateproject.api.repository.LibraryProjection;
 import com.templateproject.api.repository.LibraryRepository;
@@ -280,7 +281,7 @@ public class LibraryController {
     }
 
     @GetMapping("/users/{userId}/frequent-categories")
-    public List<Category> getMostFrequentCategories(@PathVariable UUID userId, @RequestParam(defaultValue = "5") int limit) {
+    public List<CategoryDto> getMostFrequentCategories(@PathVariable UUID userId, @RequestParam(defaultValue = "5") int limit) {
         return libraryService.getMostFrequentCategories(userId, limit);
     }
 }
