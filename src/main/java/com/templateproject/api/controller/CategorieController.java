@@ -31,9 +31,13 @@ public class CategorieController {
         return this.categoryRepository.findAllWithSeries();
     }
 
+    @GetMapping("/allCategories")
+    public List<Category> getAllCategories() {
+        return this.categoryRepository.findAll();
+    }
+
     @PostMapping("")
-    public Category createCategory(@RequestBody Map<String, String> requestBody) {
-        String categoryName = requestBody.get("categoryName");
+    public Category createCategory(@RequestBody String categoryName) {
         Category existingCategory = categoryRepository.findByName(categoryName);
         if (existingCategory != null) {
             return existingCategory;
