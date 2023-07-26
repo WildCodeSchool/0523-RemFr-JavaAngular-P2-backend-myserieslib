@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.OnDelete;
 
 
 import java.time.LocalDate;
@@ -34,13 +32,17 @@ public class Serie {
     private String description;
     private Boolean isCompleted;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "serie_category",
             joinColumns = @JoinColumn(name = "serie_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> categories = new ArrayList<>();
 
-    @ManyToMany
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "serie")
+    @JsonIgnore
+    private List<Episode> episodes = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "serie_actor",
             joinColumns = @JoinColumn(name = "serie_id"),
             inverseJoinColumns = @JoinColumn(name = "actor_id"))

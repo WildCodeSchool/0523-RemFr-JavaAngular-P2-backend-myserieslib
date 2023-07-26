@@ -30,7 +30,7 @@ public class Episode {
     private String description;
     private LocalDate releaseDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "serie_id")
     private Serie serie;
 
