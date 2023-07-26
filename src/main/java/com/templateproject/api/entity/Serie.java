@@ -23,9 +23,9 @@ public class Serie {
 
     private String name;
     private String producer;
-    @Column(length = 500)
+    @Column(columnDefinition = "text")
     private String pictureUrlXL;
-    @Column(length = 500)
+    @Column(columnDefinition = "text")
     private String pictureUrlXS;
     private String trailerURL;
     private LocalDate releaseDate;
@@ -36,7 +36,6 @@ public class Serie {
     @JoinTable(name = "serie_category",
             joinColumns = @JoinColumn(name = "serie_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    @JsonBackReference
     private List<Category> categories = new ArrayList<>();
 
     @ManyToMany
