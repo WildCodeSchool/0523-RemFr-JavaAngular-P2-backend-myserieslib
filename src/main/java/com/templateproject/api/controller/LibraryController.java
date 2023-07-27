@@ -7,6 +7,7 @@ import com.templateproject.api.repository.LibraryProjection;
 import com.templateproject.api.repository.LibraryRepository;
 import com.templateproject.api.repository.SerieRepository;
 import com.templateproject.api.repository.UserRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -38,6 +39,11 @@ public class LibraryController {
     @GetMapping("")
     public List<Library> getAll() {
         return this.libraryRepository.findAll();
+    }
+
+    @GetMapping("/filtered")
+    public List<LibraryProjection> GetAllWithOffset(Pageable pageable) {
+        return this.libraryRepository.findWithComments(pageable).getContent();
     }
 
     @GetMapping("/{serieId}/ratings")
@@ -298,5 +304,12 @@ public class LibraryController {
     @GetMapping("/users/{userId}/frequent-categories")
     public List<CategoryDto> getMostFrequentCategories(@PathVariable UUID userId, @RequestParam(defaultValue = "5") int limit) {
         return libraryService.getMostFrequentCategories(userId, limit);
+    }
+
+    @PutMapping("/{id}")
+    public void deleteComment(@PathVariable UUID id) {
+        Library library = this.libraryRepository.findById(id).orElseThrow();
+        library.setComment(null);
+        libraryRepository.save(library);
     }
 }
