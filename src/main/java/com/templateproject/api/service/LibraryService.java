@@ -1,6 +1,7 @@
 package com.templateproject.api.service;
 
 import com.templateproject.api.dto.CategoryDto;
+import com.templateproject.api.dto.SerieDto;
 import com.templateproject.api.entity.*;
 import com.templateproject.api.repository.EpisodeRepository;
 import com.templateproject.api.repository.LibraryRepository;
@@ -89,7 +90,8 @@ public class LibraryService {
         Map<Category, Integer> categoryCount = new HashMap<>();
 
         for (Library library : libraries) {
-            if (library.getStatus() == LibraryStatus.NOT_STARTED) {
+            LibraryStatus status = library.getStatus();
+            if (status != LibraryStatus.FINISHED && status != LibraryStatus.RECENTLY_SEEN) {
                 continue;
             }
             List<Category> categories = library.getSerie().getCategories();
@@ -109,5 +111,18 @@ public class LibraryService {
                 .collect(Collectors.toList());
     }
 
+    public List<SerieDto> getSerieInProgress(UUID userId) {
+        List<Library> libraries = libraryRepository.findByUserId(userId);
+
+        List<Serie> seriesInProgress = new ArrayList<>();
+        for (Library library : libraries) {
+            if (library.getStatus()== LibraryStatus.IN_PROGRESS){
+                seriesInProgress.add(library.getSerie());
+            }
+        }
+        return seriesInProgress.stream()
+                .map(dtoConversionService::convertToSerieDto)
+               .collect(Collectors.toList());
+    }
 
 }
