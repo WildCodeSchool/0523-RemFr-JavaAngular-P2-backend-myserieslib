@@ -15,9 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -55,14 +55,20 @@ public class UserController {
         return this.userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/active")
+    public List<User> getActiveUsers() {
+        return this.userRepository.findAllByDeletedFalse();
+    }
     @PostMapping("")
     public User create(@RequestBody User newUser) {
         return this.userRepository.save(newUser);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
-        this.userRepository.deleteById(id);
+    public void softDelete(@PathVariable UUID id) {
+        User user = this.userRepository.findById(id).orElseThrow();
+        user.setDeleted(true);
+        this.userRepository.save(user);
     }
 
     @GetMapping("/user")
@@ -106,5 +112,18 @@ public class UserController {
         PasswordEncoder password = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         user.setPassword(password.encode(newPassword.getPassword()));
         return this.userRepository.save(user);
+    }
+
+    //Find user by name
+    @GetMapping("/find/{nickname}")
+    public User findUserBySimilarNickname(@PathVariable String nickname) {
+        List<User> allUsers = this.userRepository.findAll();
+        int similarityThreshold = 2;
+
+        Optional<User> closestMatch = allUsers.stream()
+                .filter(user -> LevenshteinDistance.getDefaultInstance().apply(nickname, user.getNickname()) <= similarityThreshold)
+                .min(Comparator.comparingInt(user -> LevenshteinDistance.getDefaultInstance().apply(nickname, user.getNickname())));
+
+        return closestMatch.orElseThrow(() -> new NoSuchElementException("No user found with a similar nickname."));
     }
 }

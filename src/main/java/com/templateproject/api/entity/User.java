@@ -26,6 +26,8 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    private boolean deleted;
+
     @Column(unique = true)
     private String email;
 
