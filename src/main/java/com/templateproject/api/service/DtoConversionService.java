@@ -1,7 +1,9 @@
 package com.templateproject.api.service;
 
+import com.templateproject.api.dto.ActorDto;
 import com.templateproject.api.dto.CategoryDto;
 import com.templateproject.api.dto.SerieDto;
+import com.templateproject.api.entity.Actor;
 import com.templateproject.api.entity.Category;
 import com.templateproject.api.entity.Serie;
 import org.springframework.stereotype.Service;
@@ -48,5 +50,17 @@ public class DtoConversionService {
         categoryDto.setSeries(category.getSeries().stream().map(this::lighterSerieDto).collect(Collectors.toList()));
 
         return categoryDto;
+    }
+
+    public ActorDto convertToActorDto(Actor actor) {
+        if (actor == null) {
+            return null;
+        }
+        ActorDto actorDto = new ActorDto();
+        actorDto.setId(actor.getId());
+        actorDto.setFirstName(actor.getFirstName());
+        actorDto.setLastName(actor.getLastName());
+        actorDto.setPictureUrl(actor.getPictureUrl());
+        return actorDto;
     }
 }
