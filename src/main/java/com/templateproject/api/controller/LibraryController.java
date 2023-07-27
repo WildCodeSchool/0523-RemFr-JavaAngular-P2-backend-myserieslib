@@ -1,6 +1,7 @@
 package com.templateproject.api.controller;
 
 import com.templateproject.api.dto.CategoryDto;
+import com.templateproject.api.dto.SerieDto;
 import com.templateproject.api.entity.*;
 import com.templateproject.api.repository.*;
 import com.templateproject.api.repository.LibraryProjection;
@@ -299,4 +300,11 @@ public class LibraryController {
     public List<CategoryDto> getMostFrequentCategories(@PathVariable UUID userId, @RequestParam(defaultValue = "5") int limit) {
         return libraryService.getMostFrequentCategories(userId, limit);
     }
+
+    @GetMapping("/in-progress")
+    public ResponseEntity<List<SerieDto>> getSerieInProgress(@RequestParam UUID userId) {
+        List<SerieDto> seriesInProgress = libraryService.getSerieInProgress(userId);
+        return ResponseEntity.ok(seriesInProgress);
+    }
+
 }
