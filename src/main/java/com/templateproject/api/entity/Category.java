@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.UUID;
 import static org.hibernate.annotations.OnDeleteAction.CASCADE;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -24,7 +27,9 @@ public class Category {
     private String name;
 
     @ManyToMany(mappedBy = "categories")
-    @OnDelete(action = CASCADE)
+
+    @OnDelete(action = OnDeleteAction.CASCADE)
+
     @JsonIgnore
     private List<Serie> series = new ArrayList<>();
 
