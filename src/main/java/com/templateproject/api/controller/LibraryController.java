@@ -1,12 +1,14 @@
 package com.templateproject.api.controller;
 
 import com.templateproject.api.dto.CategoryDto;
+import com.templateproject.api.dto.SerieDto;
 import com.templateproject.api.entity.*;
 import com.templateproject.api.repository.*;
 import com.templateproject.api.repository.LibraryProjection;
 import com.templateproject.api.repository.LibraryRepository;
 import com.templateproject.api.repository.SerieRepository;
 import com.templateproject.api.repository.UserRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -38,6 +40,11 @@ public class LibraryController {
     @GetMapping("")
     public List<Library> getAll() {
         return this.libraryRepository.findAll();
+    }
+
+    @GetMapping("/filtered")
+    public List<LibraryProjection> GetAllWithOffset(Pageable pageable) {
+        return this.libraryRepository.findWithComments(pageable).getContent();
     }
 
     @GetMapping("/{serieId}/ratings")
@@ -299,4 +306,19 @@ public class LibraryController {
     public List<CategoryDto> getMostFrequentCategories(@PathVariable UUID userId, @RequestParam(defaultValue = "5") int limit) {
         return libraryService.getMostFrequentCategories(userId, limit);
     }
+
+
+    @GetMapping("/in-progress")
+    public ResponseEntity<List<SerieDto>> getSerieInProgress(@RequestParam UUID userId) {
+        List<SerieDto> seriesInProgress = libraryService.getSerieInProgress(userId);
+        return ResponseEntity.ok(seriesInProgress);
+    }
+
+    @PutMapping("/{id}")
+    public void deleteComment(@PathVariable UUID id) {
+        Library library = this.libraryRepository.findById(id).orElseThrow();
+        library.setComment(null);
+        libraryRepository.save(library);
+    }
+
 }
