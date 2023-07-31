@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class Actor {
     private String pictureUrl;
 
     @ManyToMany(mappedBy = "actors")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private List<Serie> series = new ArrayList<>();
 

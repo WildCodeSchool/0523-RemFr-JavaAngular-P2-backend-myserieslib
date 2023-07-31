@@ -64,6 +64,13 @@ public class LibraryController {
         return libraryRepository.findBySerieId(serie.getId());
     }
 
+    // Get all user comments
+    @GetMapping("/user/{userId}/comments")
+    public List<Library> getAllUserComments(@PathVariable UUID userId) {
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return libraryRepository.findByUserId(userId);
+    }
+
     @GetMapping("/{userId}")
     public List<Library> getAllUserSeriesSelected(@PathVariable UUID userId) {
         User user = this.userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
