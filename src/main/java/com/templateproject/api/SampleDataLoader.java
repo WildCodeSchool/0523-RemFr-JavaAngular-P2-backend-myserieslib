@@ -100,6 +100,23 @@ public class SampleDataLoader implements CommandLineRunner {
 
         };
 
+        String[] userAvatar = {
+                "https://i.postimg.cc/NFzf7Zwy/ava-1.png",
+                "https://i.postimg.cc/sDM2Dfp5/ava-2.png",
+                "https://i.postimg.cc/Wbq2cWvn/ava-3.png",
+                "https://i.postimg.cc/rpjTN718/ava-4.png",
+                "https://i.postimg.cc/Vv6ktm2Q/ava-5.png",
+                "https://i.postimg.cc/FHjN7Y1k/ava-6.png",
+                "https://i.postimg.cc/2yVC6TBC/ava-7.png",
+                "https://i.postimg.cc/2jKzJpPy/ava-8.png",
+                "https://i.postimg.cc/hj3qHxZ6/ava-9.png",
+                "https://i.postimg.cc/PqThZd83/ava-10.png",
+                "https://i.postimg.cc/7ZvqH3Py/ava-11.png",
+                "https://i.postimg.cc/KzY2qQft/ava-12.png",
+                "https://i.postimg.cc/7hGyD6p6/ava-13.png",
+                "https://i.postimg.cc/j2pYjTbh/ava-14.png",
+        };
+
         List<Actor> actor = IntStream.rangeClosed(1, 50)
                 .mapToObj(i -> new Actor(
                         faker.name().firstName(), faker.name().lastName(), actorAvatar[random.nextInt(0,5)]
@@ -177,7 +194,7 @@ public class SampleDataLoader implements CommandLineRunner {
                                 faker.internet().emailAddress(),
                                 faker.animal().name(),
                                 faker.internet().password(),
-                                faker.internet().avatar(),
+                                userAvatar[random.nextInt(0, 14)],
                                 i == 1 ? roleAdmin : roleUser
                         );
                         return user;
