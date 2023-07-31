@@ -60,8 +60,11 @@ public class LibraryService {
         int totalRating = 0;
         int numberOfRatings = 0;
         for (Library library : libraries) {
-            totalRating += library.getScore();
-            numberOfRatings++;
+            Integer rating = library.getScore();
+            if (rating != null){
+                totalRating += library.getScore();
+                numberOfRatings++;
+            }
         }
         if (numberOfRatings == 0) {
             return 0.0;
