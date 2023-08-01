@@ -61,12 +61,12 @@ public class SampleDataLoader implements CommandLineRunner {
         String[] serieAvatarXl = {
                 "https://cache.cosmopolitan.fr/data/photo/w1000_ci/4x/ned-stark.jpg",
                 "https://www.lexpress.fr/resizer/i8FjgArCdRRq1Rjh72ZgGKqyyBE=/970x548/cloudfront-eu-central-1.images.arcpublishing.com/lexpress/WJDAZYAYF5FUHH72BDIYUA7HQY.jpg",
-                "https://uploads.lebonbon.fr/source/2023/july/2046940/gg_2_1200.jpg",
+                "https://imgsrc.cineserie.com/2019/11/gossip-girl-kristen-bell-de-retour-dans-le-reboot.jpg?ver=1",
                 "https://www.talenteo.fr/app/uploads/2013/05/badass-quotes-by-dr-house-980x457-1486740267_1400x653-1600x692.jpg",
                 "https://img.20mn.fr/_Sv2ljITTeePM8CGwOBgnyk/1200x768_ou-regarder-le-dernier-episode-de-la-serie-house-of-the-dragon",
                 "https://occ-0-1432-38.1.nflxso.net/dnm/api/v6/6AYY37jfdO6hpXcMjf9Yu5cnmO0/AAAABS6v2gvwesuRN6c28ZykPq_fpmnQCJwELBU-kAmEcuC9HhWX-DfuDbtA-bfo-IrfgNtxl0qwJJlhI6DENsGFXknKkjhxPGTV-qhp.jpg?r=608",
                 "https://img.nrj.fr/VCdMWgPk2YcXDDrw2yx4awUBRA4=/0x415/smart/medias%2F2022%2F07%2F62d6680cba380_62d668164ba7c.jpg",
-                "https://imgsrc.cineserie.com/2020/10/secrets-de-serie-quatre-secrets-sur-lost-6.jpg?ver=1",
+                "https://www.radiofrance.fr/s3/cruiser-production/2019/07/24731301-da0c-40f9-88fb-20047a3c5200/1200x680_lost-bientot-le-retour.jpg",
         };
 
         String[] serieAvatarXS = {
