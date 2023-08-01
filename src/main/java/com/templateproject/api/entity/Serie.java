@@ -29,6 +29,7 @@ public class Serie {
     private String pictureUrlXS;
     private String trailerURL;
     private LocalDate releaseDate;
+    @Column(columnDefinition = "text")
     private String description;
     private Boolean isCompleted;
 

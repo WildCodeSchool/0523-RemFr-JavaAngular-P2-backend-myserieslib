@@ -28,6 +28,7 @@ public class Episode {
     private Integer episodeNumber;
     private String title;
     private Integer seasonNumber;
+    @Column(columnDefinition = "text")
     private String thumbnail;
     @Column(columnDefinition = "text")
     private String description;
